@@ -39,6 +39,14 @@ const router = createRouter({ // 创建 router 实例并配置路由
             path: '/guess-number/historical-record',
             name: 'guess-number-historical-record',
             component: () => import('@/views/GuessNumberHistoricalRecord.vue')
+        }, {
+            path: '/character-map',
+            name: 'character-map',
+            component: () => import('@/views/CharacterMap.vue')
+        }, {
+            path: '/character-map/sub',
+            name: 'character-map/sub',
+            component: () => import('@/views/CharacterMapSub.vue')
         }
     ]
 })

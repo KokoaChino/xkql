@@ -28,12 +28,16 @@
 import { ref } from "vue";
 import { post } from "@/net";
 import router from "@/router/index.js";
+import {ElMessage} from "element-plus";
 
 const max = ref()
 
 const game_start = async () => {
-    await post("/guess-number/game/start", max.value)
-    await router.push('/guess-number/playing')
+    if (max.value) {
+        await post("/guess-number/game/start", max.value)
+        await router.push('/guess-number/playing')
+    }
+    else ElMessage.warning("请先选择游戏最大值")
 }
 
 const historical_record = async () => {

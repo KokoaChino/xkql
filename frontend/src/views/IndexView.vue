@@ -12,11 +12,10 @@
     <br>
     <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 50px 50px; gap: 10px; height: auto; width: 50%; margin: 0 auto;">
         <button @click="guess_number" class="my-button">猜数字游戏</button>
-        <button class="my-button"></button>
-        <button class="my-button"></button>
+        <button @click="character_map" class="my-button">角色图</button>
+        <button @click="test" class="my-button">test</button>
         <button class="my-button"></button>
     </div>
-
 </template>
 
 
@@ -26,9 +25,11 @@ import {GET, post, get} from "@/net";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 import {useStore} from "@/stores";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const store = useStore()
+const list = ref([])
+const urls = ref([])
 
 const logout = () => {
     GET('/api/auth/logout', (message) => {
@@ -42,14 +43,18 @@ const guess_number = () => {
     router.push('/guess-number')
 }
 
+const character_map = () => {
+    router.push('/character-map')
+}
 
 const unsubscribe = async () => {
     logout()
     await post("api/auth/unsubscribe", store.auth.user.username)
 }
 
+const test = async () => {
 
-
+}
 </script>
 
 

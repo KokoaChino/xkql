@@ -3,50 +3,50 @@
     <hr>
     <table>
         <thead>
-        <tr>
+        <tr style="color: indigo">
             <th>最大值</th>
             <th>最小次数</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>10</td>
-            <td v-if="a[0]">{{ a[0] }}</td>
+            <td style="color: #333333">10</td>
+            <td style="color: forestgreen" v-if="a[0]">{{ a[0] }}</td>
             <td v-if="!a[0]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>100</td>
-            <td v-if="a[1]">{{ a[1] }}</td>
+            <td style="color: #333333">100</td>
+            <td style="color: forestgreen" v-if="a[1]">{{ a[1] }}</td>
             <td v-if="!a[1]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>1000</td>
-            <td v-if="a[2]">{{ a[2] }}</td>
+            <td style="color: #333333">1000</td>
+            <td style="color: forestgreen" v-if="a[2]">{{ a[2] }}</td>
             <td v-if="!a[2]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>10000</td>
-            <td v-if="a[3]">{{ a[3] }}</td>
+            <td style="color: #333333">10000</td>
+            <td style="color: forestgreen" v-if="a[3]">{{ a[3] }}</td>
             <td v-if="!a[3]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>100000</td>
-            <td v-if="a[4]">{{ a[4] }}</td>
+            <td style="color: #333333">100000</td>
+            <td style="color: forestgreen" v-if="a[4]">{{ a[4] }}</td>
             <td v-if="!a[4]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>1000000</td>
-            <td v-if="a[5]">{{ a[5] }}</td>
+            <td style="color: #333333">1000000</td>
+            <td style="color: forestgreen" v-if="a[5]">{{ a[5] }}</td>
             <td v-if="!a[5]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>10000000</td>
-            <td v-if="a[6]">{{ a[6] }}</td>
+            <td style="color: #333333">10000000</td>
+            <td style="color: forestgreen" v-if="a[6]">{{ a[6] }}</td>
             <td v-if="!a[6]" style="color: red">INF</td>
         </tr>
         <tr>
-            <td>100000000</td>
-            <td v-if="a[7]">{{ a[7] }}</td>
+            <td style="color: #333333">100000000</td>
+            <td style="color: forestgreen" v-if="a[7]">{{ a[7] }}</td>
             <td v-if="!a[7]" style="color: red">INF</td>
         </tr>
         </tbody>
@@ -74,7 +74,6 @@ const reset = async () => {
 onMounted(async () => {
     a.value = await post("/guess-number/historical-record", store.auth.user.username)
 })
-
 </script>
 
 

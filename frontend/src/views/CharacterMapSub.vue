@@ -1,5 +1,8 @@
 <template>
     <h1 style="text-align: center">{{ characterName }}</h1>
+    <div style="text-align: center">
+        <a :href="zipurl" :download="zipname">下载全部图片</a>
+    </div>
     <hr>
     <div class="container">
         <div class="photo-card" v-for="(url, index) in urls" :key="index">
@@ -22,6 +25,7 @@ import {get, post} from "@/net";
 import {ref, onMounted} from 'vue';
 
 const characterName = ref()
+const zipurl = ref(), zipname = ref()
 const list = ref([])
 const urls = ref([])
 
@@ -31,6 +35,8 @@ onMounted(async () => {
     for (let i = 0; i < list.value.length; i++) {
         urls.value.push('/角色图/' + characterName.value + '/' + list.value[i][0] + '.jpg');
     }
+    zipurl.value = '/角色图压缩/' + characterName.value + '.zip'
+    zipname.value = characterName.value + '.zip'
 })
 </script>
 

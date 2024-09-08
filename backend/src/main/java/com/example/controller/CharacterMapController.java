@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -38,6 +37,9 @@ public class CharacterMapController {
         List<List<String>> res = new ArrayList<>();
         for (File file : files) {
             res.add(new ArrayList<>(List.of(file.getName(), Objects.requireNonNull(file.listFiles())[SHOW.get(file.getName()) - 1].getName())));
+            List<String> last = res.get(res.size() - 1);
+            last.add("/角色图压缩/" + last.get(0) + ".zip");
+            last.add(last.get(0) + ".zip");
         }
         return res;
     }
@@ -60,12 +62,10 @@ public class CharacterMapController {
         File[] files = characterMap.listFiles();
         List<List<String>> res = new ArrayList<>();
         for (File file : files) {
-            Date lastModifiedDate = new Date(file.lastModified());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String formattedDate = sdf.format(lastModifiedDate);
+            double size = file.length() / 1024.0;
             String fileName = file.getName();
             fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-            res.add(new ArrayList<>(List.of(fileName, formattedDate, file.getName())));
+            res.add(new ArrayList<>(List.of(fileName, String.format("%.2f KB", size), file.getName())));
         }
         return res;
     }

@@ -4,8 +4,6 @@ import com.example.entity.auth.Account;
 import com.example.entity.user.AccountUser;
 import org.apache.ibatis.annotations.*;
 
-import java.util.List;
-
 
 @Mapper
 public interface UserMapper {
@@ -35,5 +33,4 @@ public interface UserMapper {
 
     @Delete("delete from datas where username = #{username}")
     int deleteAccountDatas(String username);
-
 }

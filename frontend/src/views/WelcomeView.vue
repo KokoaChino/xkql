@@ -6,7 +6,7 @@
         </div>
         <div class="welcome-title">
             <div style="font-size: 30px;font-weight: bold">星开祈灵</div>
-            <div style="margin-top: 10px">现在还不知道要写些什么</div>
+            <div style="margin-top: 10px">微信：ryu0785</div>
             <div style="margin-top: 5px">2024.8.16</div>
         </div>
         <div style="width: 400px;background-color: white;z-index: 1">
@@ -19,10 +19,14 @@
     </div>
 </template>
 
+
+
 <script setup>
 
 
 </script>
+
+
 
 <style scoped>
 .welcome-title {
@@ -33,4 +37,3 @@
     text-shadow: 0 0 10px black;
 }
 </style>
-

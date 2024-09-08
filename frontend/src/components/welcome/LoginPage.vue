@@ -36,13 +36,15 @@
     </div>
 </template>
 
+
+
 <script setup>
-import {User, Lock} from '@element-plus/icons-vue'
-import {reactive} from "vue";
-import {ElMessage} from "element-plus";
-import {GET, POST} from "@/net";
+import { User, Lock } from '@element-plus/icons-vue'
+import { reactive } from "vue";
+import { ElMessage } from "element-plus";
+import { GET, POST } from "@/net";
 import router from "@/router";
-import {useStore} from "@/stores";
+import { useStore } from "@/stores";
 
 const store = useStore()
 
@@ -72,6 +74,8 @@ const login = () => {
     }
 }
 </script>
+
+
 
 <style scoped>
 

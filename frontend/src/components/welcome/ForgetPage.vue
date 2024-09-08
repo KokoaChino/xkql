@@ -77,11 +77,13 @@
     </div>
 </template>
 
+
+
 <script setup>
-import {reactive, ref} from "vue";
-import {EditPen, Lock, Message} from "@element-plus/icons-vue";
-import {POST} from "@/net";
-import {ElMessage} from "element-plus";
+import { reactive, ref } from "vue";
+import { EditPen, Lock, Message } from "@element-plus/icons-vue";
+import { POST } from "@/net";
+import { ElMessage } from "element-plus";
 import router from "@/router";
 
 const active = ref(0)
@@ -171,8 +173,9 @@ const doReset = () => {
         }
     })
 }
-
 </script>
+
+
 
 <style scoped>
 

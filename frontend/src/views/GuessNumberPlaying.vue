@@ -1,6 +1,7 @@
 <template>
-    <h1 style="text-align: center">猜数字游戏</h1>
-    <hr>
+    <div class="card-sub">
+        <div class="text">猜数字游戏</div>
+    </div>
     <div class="container">
         <span style="color: darkslategrey">请输入 [0, {{ max }}] 之间的数字</span>
     </div>
@@ -27,10 +28,10 @@
 
 
 <script setup>
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 import { ref, onMounted } from "vue";
 import { get, post } from "@/net";
-import {useStore} from "@/stores";
+import { useStore } from "@/stores";
 
 const store = useStore(), flag = ref(true)
 const g = ref({
@@ -53,26 +54,52 @@ const game_over = async () => {
 onMounted(async () => {
     max.value = await get("/guess-number/init")
 });
-
-
-
 </script>
 
 
 
 <style scoped>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.card-sub {
+    width: 100%;
+    height: 100px;
+    border: solid 1px #202222;
+    background-size: 20px 20px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+    color: #fff;
+    margin-bottom: 20px;
+}
+.card-sub .text {
+    font-weight: bolder;
+    font-size: 3rem;
+    background: black;
+    background-clip: text;
+    color: transparent;
+}
+
 .container {
     display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center; /* 垂直居中（可选） */
+    justify-content: center;
+    align-items: center;
     height: 5vh;
 }
+
 input[type="text"] {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -85,13 +112,12 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
 .box {
-    width: 50%; /* 设置宽度为屏幕的 50% */
-    margin: 0 auto; /* 左右外边距自动，以居中对齐 */
+    width: 25%;
+    margin: 0 auto;
     padding: 20px;
-    box-sizing: border-box; /* 包括内边距和边框在内的宽度 */
-}
-.no {
-    cursor: not-allowed;
+    box-sizing: border-box;
+    line-height: 30px;
 }
 </style>

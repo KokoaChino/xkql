@@ -1,6 +1,7 @@
 <template>
-<h1 style="text-align: center">猜数字游戏</h1>
-<hr>
+    <div class="card-sub">
+        <div class="text">猜数字游戏</div>
+    </div>
     <div class="button-container">
         <button class="button button-1" @click="game_start">开始游戏</button>
         <label>
@@ -18,17 +19,15 @@
         </label>
         <button class="button button-2" @click="historical_record">历史记录</button>
     </div>
-
-
 </template>
 
 
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { post } from "@/net";
 import router from "@/router/index.js";
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 
 const max = ref()
 
@@ -43,26 +42,47 @@ const game_start = async () => {
 const historical_record = async () => {
     await router.push('/guess-number/historical-record')
 }
-
-
-
-
 </script>
 
 
 
 <style scoped>
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.card-sub {
+    width: 100%;
+    height: 100px;
+    border: solid 1px #202222;
+    background-size: 20px 20px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+    color: #fff;
+    margin-bottom: 20px;
+}
+.card-sub .text {
+    font-weight: bolder;
+    font-size: 3rem;
+    background: black;
+    background-clip: text;
+    color: transparent;
+}
+
 .button-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px; /* 按钮之间的间隔 */
-    margin-top: 50px; /* 顶部间隔 */
+    gap: 10px;
+    margin-top: 50px;
 }
-
-/* 按钮样式 */
 .button {
-    width: 200px; /* 按钮宽度 */
+    width: 200px;
     color: white;
     border: none;
     border-radius: 5px;
@@ -72,22 +92,18 @@ const historical_record = async () => {
     font-weight: bold;
     transition: background-color 0.3s ease;
 }
-
-/* 不同高度的按钮 */
 .button-1 {
     height: 50px;
     width: 220px;
     background-color: #4CAF50;
 }
-
 .button-2 {
     height: 50px;
     width: 220px;
     background-color: #2196F3;
 }
-
-/* 按钮悬停效果 */
 .button:hover {
     opacity: 0.9;
+    transform: scale(1.05);
 }
 </style>

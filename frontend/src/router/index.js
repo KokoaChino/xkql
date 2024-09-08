@@ -1,36 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import {useStore} from "@/stores";
 
-const router = createRouter({ // 创建 router 实例并配置路由
+const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL), // 使用 HTML5 的 history 模式，基础 URL 来自环境变量
-    routes: [ // 定义一个数组，包含所有的路由配置
+    routes: [
         {
-            path: '/', // 根路径
-            name: 'welcome', // 路由的名称为 'welcome'
-            component: () => import('@/views/WelcomeView.vue'), // 使用懒加载方式引入 WelcomeView 组件
-            children: [ // 定义该路由的子路由
+            path: '/',
+            name: 'welcome',
+            component: () => import('@/views/WelcomeView.vue'),
+            children: [
                 {
-                    path: '', // 空路径
-                    name: 'welcome-login', // 子路由名称为 'welcome-login'
-                    component: () => import('@/components/welcome/LoginPage.vue') // 懒加载 LoginPage 组件
+                    path: '',
+                    name: 'welcome-login',
+                    component: () => import('@/components/welcome/LoginPage.vue')
                 }, {
-                    path: 'register', // 路径为 'register'
-                    name: 'welcome-register', // 子路由名称为 'welcome-register'
-                    component: () => import('@/components/welcome/RegisterPage.vue') // 懒加载 RegisterPage 组件
+                    path: 'register',
+                    name: 'welcome-register',
+                    component: () => import('@/components/welcome/RegisterPage.vue')
                 }, {
-                    path: 'forget', // 路径为 'forget'
-                    name: 'welcome-forget', // 子路由名称为 'welcome-forget'
-                    component: () => import('@/components/welcome/ForgetPage.vue') // 懒加载 ForgetPage 组件
+                    path: 'forget',
+                    name: 'welcome-forget',
+                    component: () => import('@/components/welcome/ForgetPage.vue')
                 }
             ]
         }, {
-            path: '/index', // 路径为 '/index'
-            name: 'index', // 路由名称为 'index'
-            component: () => import('@/views/IndexView.vue') // 懒加载 IndexView 组件
+            path: '/index',
+            name: 'index',
+            component: () => import('@/views/IndexView.vue'),
+            meta: {
+                title: '主页',
+                icon: '/favicon.png'
+            }
+        }, {
+            path: '/test',
+            name: 'test',
+            component: () => import('@/views/Test.vue'),
+            meta: {
+                title: 'Test',
+                icon: '/icon/Test.png'
+            }
         }, {
             path: '/guess-number',
             name: 'guess-number',
             component: () => import('@/views/GuessNumber.vue'),
+            meta: {
+                title: '猜数字游戏',
+                icon: '/icon/GuessNumber.png'
+            }
         }, {
             path: '/guess-number/playing',
             name: 'guess-number-playing',
@@ -42,7 +58,11 @@ const router = createRouter({ // 创建 router 实例并配置路由
         }, {
             path: '/character-map',
             name: 'character-map',
-            component: () => import('@/views/CharacterMap.vue')
+            component: () => import('@/views/CharacterMap.vue'),
+            meta: {
+                title: '角色自截图',
+                icon: '/icon/CharacterMap.png'
+            }
         }, {
             path: '/character-map/sub',
             name: 'character-map/sub',

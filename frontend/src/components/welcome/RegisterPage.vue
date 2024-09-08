@@ -63,12 +63,14 @@
     </div>
 </template>
 
+
+
 <script setup>
-import {EditPen, Lock, Message, User} from "@element-plus/icons-vue";
+import { EditPen, Lock, Message, User } from "@element-plus/icons-vue";
 import router from "@/router";
-import {reactive, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {POST} from "@/net";
+import { reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
+import { POST } from "@/net";
 
 const form = reactive({
     username: '',
@@ -159,6 +161,8 @@ const validateEmail = () => {
     })
 }
 </script>
+
+
 
 <style scoped>
 

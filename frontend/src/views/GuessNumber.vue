@@ -1,7 +1,5 @@
 <template>
-    <div class="card-sub">
-        <div class="text">猜数字游戏</div>
-    </div>
+    <Title/>
     <div class="button-container">
         <button class="button button-1" @click="game_start">开始游戏</button>
         <label>
@@ -28,6 +26,10 @@ import { ref } from "vue";
 import { post } from "@/net";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus";
+import Title from '@/components/module/Title.vue';
+import { provide } from "vue";
+
+provide("title", "猜数字游戏");
 
 const max = ref()
 
@@ -50,28 +52,6 @@ const historical_record = async () => {
 * {
     margin: 0;
     padding: 0;
-}
-
-.card-sub {
-    width: 100%;
-    height: 100px;
-    border: solid 1px #202222;
-    background-size: 20px 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    color: #fff;
-    margin-bottom: 20px;
-}
-.card-sub .text {
-    font-weight: bolder;
-    font-size: 3rem;
-    background: black;
-    background-clip: text;
-    color: transparent;
 }
 
 .button-container {

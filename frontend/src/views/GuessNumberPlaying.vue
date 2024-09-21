@@ -1,7 +1,5 @@
 <template>
-    <div class="card-sub">
-        <div class="text">猜数字游戏</div>
-    </div>
+    <Title/>
     <div class="container">
         <span style="color: darkslategrey">请输入 [0, {{ max }}] 之间的数字</span>
     </div>
@@ -32,6 +30,10 @@ import { ElMessage } from "element-plus";
 import { ref, onMounted } from "vue";
 import { get, post } from "@/net";
 import { useStore } from "@/stores";
+import Title from '@/components/module/Title.vue';
+import { provide } from "vue";
+
+provide("title", "猜数字游戏");
 
 const store = useStore(), flag = ref(true)
 const g = ref({
@@ -62,28 +64,6 @@ onMounted(async () => {
 * {
     margin: 0;
     padding: 0;
-}
-
-.card-sub {
-    width: 100%;
-    height: 100px;
-    border: solid 1px #202222;
-    background-size: 20px 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    color: #fff;
-    margin-bottom: 20px;
-}
-.card-sub .text {
-    font-weight: bolder;
-    font-size: 3rem;
-    background: black;
-    background-clip: text;
-    color: transparent;
 }
 
 .container {

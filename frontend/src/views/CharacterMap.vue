@@ -1,7 +1,5 @@
 <template>
-    <div class="card">
-        <div class="text">角色自截图</div>
-    </div>
+    <Title/>
     <div class="container">
         <div class="for" v-for="(url, index) in urls" :key="index">
             <div class="card-sub">
@@ -31,6 +29,10 @@
 import { get, post } from "@/net";
 import router from "@/router/index.js";
 import { ref, onMounted } from 'vue';
+import Title from '@/components/module/Title.vue';
+import { provide } from "vue";
+
+provide("title", "角色自截图");
 
 const list = ref([])
 const urls = ref([])
@@ -70,27 +72,6 @@ onMounted( async () => {
     padding: 0;
 }
 
-.card {
-    width: 100%;
-    height: 100px;
-    border: solid 1px #202222;
-    background-size: 20px 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    color: #fff;
-    margin-bottom: 20px;
-}
-.card .text {
-    font-weight: bolder;
-    font-size: 3rem;
-    background: black;
-    background-clip: text;
-    color: transparent;
-}
 .container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);

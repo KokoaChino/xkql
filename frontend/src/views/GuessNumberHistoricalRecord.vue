@@ -1,7 +1,5 @@
 <template>
-    <div class="card-sub">
-        <div class="text">历史记录</div>
-    </div>
+    <Title/>
     <table>
         <thead>
         <tr style="color: indigo">
@@ -64,6 +62,10 @@
 import { ref, onMounted } from "vue";
 import { post } from "@/net";
 import { useStore } from "@/stores";
+import Title from '@/components/module/Title.vue';
+import { provide } from "vue";
+
+provide("title", "历史记录");
 
 const a = ref([0, 0, 0, 0, 0, 0, 0, 0])
 const store = useStore()
@@ -84,28 +86,6 @@ onMounted(async () => {
 * {
     margin: 0;
     padding: 0;
-}
-
-.card-sub {
-    width: 100%;
-    height: 100px;
-    border: solid 1px #202222;
-    background-size: 20px 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    color: #fff;
-    margin-bottom: 20px;
-}
-.card-sub .text {
-    font-weight: bolder;
-    font-size: 3rem;
-    background: black;
-    background-clip: text;
-    color: transparent;
 }
 
 table {

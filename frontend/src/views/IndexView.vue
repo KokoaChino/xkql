@@ -1,8 +1,6 @@
 <template>
     <div class="container">
-        <div class="card-sub">
-            <div class="text">星开祈灵的小项目</div>
-        </div>
+        <Title/>
         <div style="display: flex">
             <div style="margin-left: 10px;">
                 <button class="Btn" style="background-color: red" @click="unsubscribe">
@@ -54,6 +52,10 @@ import { GET, post } from "@/net";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 import { useStore } from "@/stores";
+import Title from '@/components/module/Title.vue';
+import { provide } from "vue";
+
+provide("title", "星开祈灵的小项目");
 
 const store = useStore()
 
@@ -98,28 +100,6 @@ const test = async () => {
     background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 0);
     background-size: 30px 30px;
     background-position: -5px -5px;
-}
-
-.card-sub {
-    width: 100%;
-    height: 100px;
-    border: solid 1px #202222;
-    background-size: 20px 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex-direction: column;
-    color: #fff;
-    margin-bottom: 20px;
-}
-.card-sub .text {
-    font-weight: bolder;
-    font-size: 3rem;
-    background: black;
-    background-clip: text;
-    color: transparent;
 }
 
 .outermost {

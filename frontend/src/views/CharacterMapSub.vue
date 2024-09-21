@@ -1,5 +1,5 @@
 <template>
-    <div class="card-sub">
+    <div class="card-title">
         <div class="text">{{ characterName }}</div>
     </div>
     <div class="container">
@@ -41,6 +41,7 @@
 import { post } from "@/net";
 import { ref, onMounted } from 'vue';
 
+
 const characterName = ref()
 const list = ref([])
 const urls = ref([])
@@ -71,7 +72,7 @@ body {
     background-color: #f4f4f4;
 }
 
-.card-sub {
+.card-title {
     width: 100%;
     height: 100px;
     border: solid 1px #202222;
@@ -85,7 +86,7 @@ body {
     color: #fff;
     margin-bottom: 20px;
 }
-.card-sub .text {
+.card-title .text {
     font-weight: bolder;
     font-size: 3rem;
     background: black;

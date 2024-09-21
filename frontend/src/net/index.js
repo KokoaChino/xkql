@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 
 const defaultError = () => ElMessage.error('发生了一些错误，请联系管理员')
 const defaultFailure = (message) => ElMessage.warning(message)

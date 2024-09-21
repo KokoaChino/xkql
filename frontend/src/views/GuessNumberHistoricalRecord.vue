@@ -62,7 +62,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { get, post } from "@/net";
+import { post } from "@/net";
 import { useStore } from "@/stores";
 
 const a = ref([0, 0, 0, 0, 0, 0, 0, 0])

@@ -24,7 +24,7 @@
 
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { post } from "@/net";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus";

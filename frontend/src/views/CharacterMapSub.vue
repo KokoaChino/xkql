@@ -38,7 +38,7 @@
 
 
 <script setup>
-import { get, post } from "@/net";
+import { post } from "@/net";
 import { ref, onMounted } from 'vue';
 
 const characterName = ref()
@@ -130,13 +130,11 @@ body {
     text-decoration: none;
     margin: auto;
     line-height: 1;
-    background-color: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.35em;
-    padding: 0.75em 1em;
-    padding-right: 1.25em;
+    padding: 0.75em 1.25em 0.75em 1em;
     color: #fff;
     border: 1px solid transparent;
     font-weight: 700;
@@ -144,7 +142,7 @@ body {
     font-size: 1rem;
     box-shadow: 0 0.7em 1.5em -0.5em hsla(249, 62%, 51%, 0.745);
     transition: transform 0.3s;
-    background: linear-gradient(
+    background: transparent linear-gradient(
         90deg,
         rgba(77, 54, 208, 1) 0%,
         rgba(132, 116, 254, 1) 100%

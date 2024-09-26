@@ -38,6 +38,10 @@
                 <button role="button" class="button-name" @click="character_map">角色自截图</button>
             </div>
             <div class="item">
+                <img src="/icon/LinkGame.png" alt="连连看游戏">
+                <button role="button" class="button-name" @click="link_game">连连看游戏</button>
+            </div>
+            <div class="item">
                 <img src="/icon/Test.png" alt="Test">
                 <button role="button" class="button-name" @click="test">Test</button>
             </div>
@@ -73,6 +77,10 @@ const guess_number = () => {
 
 const character_map = () => {
     router.push('/character-map')
+}
+
+const link_game = async () => {
+    await router.push('/link-game')
 }
 
 const unsubscribe = async () => {

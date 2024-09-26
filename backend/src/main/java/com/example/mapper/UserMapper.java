@@ -22,15 +22,21 @@ public interface UserMapper {
     @Update("update account set password = #{password} where email = #{email}")
     int resetPasswordByEmail(String password, String email);
 
+    @Delete("delete from account where username = #{username}")
+    int deleteAccount(String username);
+
+    @Delete("delete from datas where username = #{username}")
+    int deleteAccountDatas(String username);
+
     @Select("select guess_number from datas where username = #{username}")
     String findGuessNumberHistoricalRecord(String username);
 
     @Update("update datas set guess_number = #{s} where username = #{username}")
     int updateGuessNumberHistoricalRecord(String username, String s);
 
-    @Delete("delete from account where username = #{username}")
-    int deleteAccount(String username);
+    @Select("select link_game from datas where username = #{username}")
+    String findLinkGameHistoricalRecord(String username);
 
-    @Delete("delete from datas where username = #{username}")
-    int deleteAccountDatas(String username);
+    @Update("update datas set link_game = #{s} where username = #{username}")
+    int updateLinkGameHistoricalRecord(String username, String s);
 }

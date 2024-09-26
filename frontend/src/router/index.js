@@ -67,6 +67,22 @@ const router = createRouter({
             path: '/character-map/sub',
             name: 'character-map/sub',
             component: () => import('@/views/CharacterMapSub.vue')
+        }, {
+            path: '/link-game',
+            name: 'link-game',
+            component: () => import('@/views/LinkGame.vue')
+        }, {
+            path: '/link-game/set-game',
+            name: 'link-game/set-game',
+            component: () => import('@/views/LinkGameLibrary.vue')
+        }, {
+            path: '/link-game/game-start',
+            name: 'link-game/game-start',
+            component: () => import('@/views/LinkGamePlaying.vue')
+        }, {
+            path: '/link-game/historical-record',
+            name: 'link-game/historical-record',
+            component: () => import('@/views/LinkGameHistoricalRecord.vue')
         }
     ]
 })

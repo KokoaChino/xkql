@@ -6,7 +6,7 @@
 
 <script setup>
 import Title from '@/components/module/Title.vue';
-import { provide } from "vue";
+import { ref, provide } from "vue";
 
 provide("title", "Test");
 </script>

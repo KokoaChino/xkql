@@ -42,6 +42,10 @@
                 <button role="button" class="button-name" @click="link_game">连连看游戏</button>
             </div>
             <div class="item">
+                <img src="/icon/EchoScoringSystem.png" alt="声骸评分系统">
+                <button role="button" class="button-name" @click="echo_scoring_system">声骸评分系统</button>
+            </div>
+            <div class="item">
                 <img src="/icon/Test.png" alt="Test">
                 <button role="button" class="button-name" @click="test">Test</button>
             </div>
@@ -52,7 +56,7 @@
 
 
 <script setup>
-import { GET, post } from "@/net";
+import { _GET, post } from "@/net";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 import { useStore } from "@/stores";
@@ -64,7 +68,7 @@ provide("title", "星开祈灵的小项目");
 const store = useStore()
 
 const logout = () => {
-    GET('/api/auth/logout', (message) => {
+    _GET('/api/auth/logout', (message) => {
         ElMessage.success(message)
         store.auth.user = null
         router.push('/')
@@ -81,6 +85,10 @@ const character_map = () => {
 
 const link_game = async () => {
     await router.push('/link-game')
+}
+
+const echo_scoring_system = async () => {
+    await router.push('/echo-scoring-system')
 }
 
 const unsubscribe = async () => {

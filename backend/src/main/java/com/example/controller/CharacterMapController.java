@@ -15,17 +15,19 @@ public class CharacterMapController {
     private static final Map<String, Integer> SHOW = new HashMap<>();
 
     static {
-        SHOW.put("保登心爱", 34);
-        SHOW.put("豆馅", 1);
-        SHOW.put("奈津惠", 15);
-        SHOW.put("青山蓝山", 12);
-        SHOW.put("提比", 4);
-        SHOW.put("天天座理世", 41);
-        SHOW.put("条河麻耶", 10);
-        SHOW.put("桐间纱路", 50);
-        SHOW.put("香风智乃", 61);
-        SHOW.put("宇治松千夜", 31);
+        SHOW.put("保登摩卡", 3);
+        SHOW.put("保登心爱", 565);
+        SHOW.put("豆馅", 4);
+        SHOW.put("奈津惠", 72);
+        SHOW.put("青山蓝山", 23);
         SHOW.put("塞西莉亚", 41);
+        SHOW.put("提比", 34);
+        SHOW.put("天天座理世", 48);
+        SHOW.put("条河麻耶", 10);
+        SHOW.put("桐间纱路", 154);
+        SHOW.put("香风智乃", 101);
+        SHOW.put("野雁", 6);
+        SHOW.put("宇治松千夜", 188);
         SHOW.put("宇佐美瑞希", 1);
     }
 

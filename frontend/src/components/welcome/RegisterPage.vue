@@ -70,7 +70,7 @@ import { EditPen, Lock, Message, User } from "@element-plus/icons-vue";
 import router from "@/router";
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { POST } from "@/net";
+import { _POST } from "@/net";
 
 const form = reactive({
     username: '',
@@ -133,7 +133,7 @@ const onValidate = (prop, isValid) => {
 const register = () => {
     formRef.value.validate((isValid) => { // 调用 formRef 的 validate 方法验证表单，验证结果通过回调函数返回
         if(isValid) { // 如果表单验证通过
-            POST('/api/auth/register', { // 请求体包含注册所需的数据
+            _POST('/api/auth/register', { // 请求体包含注册所需的数据
                 username: form.username,
                 password: form.password,
                 email: form.email,
@@ -150,7 +150,7 @@ const register = () => {
 
 const validateEmail = () => {
     coldTime.value = 60 // 表示倒计时时间
-    POST('/api/auth/valid-register-email', { // 请求体包含验证邮箱所需的数据
+    _POST('/api/auth/valid-register-email', { // 请求体包含验证邮箱所需的数据
         email: form.email
     }, (message) => { // 请求成功后调用回调函数，接收返回的消息
         ElMessage.success(message)

@@ -82,7 +82,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { EditPen, Lock, Message } from "@element-plus/icons-vue";
-import { POST } from "@/net";
+import { _POST } from "@/net";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 
@@ -133,7 +133,7 @@ const onValidate = (prop, isValid) => {
 
 const validateEmail = () => {
     coldTime.value = 60
-    POST('/api/auth/valid-reset-email', {
+    _POST('/api/auth/valid-reset-email', {
         email: form.email
     }, (message) => { // 成功回调函数，处理请求成功后的响应
         ElMessage.success(message) // 显示成功消息
@@ -147,7 +147,7 @@ const validateEmail = () => {
 const startReset = () => {
     formRef.value.validate((isValid) => { // 进行表单验证
         if(isValid) { // 如果表单验证通过
-            POST('/api/auth/start-reset', { // 开始重置过程
+            _POST('/api/auth/start-reset', { // 开始重置过程
                 email: form.email,
                 code: form.code
             }, () => { // 成功回调函数，处理请求成功后的响应
@@ -162,7 +162,7 @@ const startReset = () => {
 const doReset = () => {
     formRef.value.validate((isValid) => { // 进行表单验证
         if(isValid) { // 如果表单验证通过
-            POST('/api/auth/do-reset', { // 执行密码重置
+            _POST('/api/auth/do-reset', { // 执行密码重置
                 password: form.password
             }, (message) => { // 成功回调函数，处理请求成功后的响应
                 ElMessage.success(message) // 显示成功消息

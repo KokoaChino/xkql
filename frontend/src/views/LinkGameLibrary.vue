@@ -50,7 +50,7 @@
 import Title from '@/components/module/Title.vue';
 import cloneDeep from 'lodash/cloneDeep';
 import { provide, ref, watch, onMounted } from "vue";
-import { POST, post } from "@/net";
+import { _POST, post } from "@/net";
 import { ElMessage } from "element-plus";
 
 provide("title", "连连看游戏库");
@@ -126,7 +126,7 @@ const submit = async () => {
     is_gain.value = false;
     await init(n.value);
     is_gain.value = true;
-    POST("/link-game/set-library",
+    _POST("/link-game/set-library",
         {json: JSON.stringify(G.value), n: n.value},
         (message) => ElMessage.success(message));
 }
@@ -138,7 +138,7 @@ const remove = async () => {
     is_gain.value = false;
     await init(n.value);
     is_gain.value = true;
-    POST("/link-game/set-library",
+    _POST("/link-game/set-library",
         {json: JSON.stringify(G.value), n: n.value},
         (message) => ElMessage.success(message));
 }

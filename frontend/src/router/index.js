@@ -83,6 +83,14 @@ const router = createRouter({
             path: '/link-game/historical-record',
             name: 'link-game/historical-record',
             component: () => import('@/views/LinkGameHistoricalRecord.vue')
+        }, {
+            path: '/echo-scoring-system',
+            name: 'echo-scoring-system',
+            component: () => import('@/views/EchoScoringSystem.vue')
+        }, {
+            path: '/echo-scoring-system/main',
+            name: 'echo-scoring-system/main',
+            component: () => import('@/views/EchoScoringSystemMain.vue')
         }
     ]
 })

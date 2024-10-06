@@ -42,7 +42,7 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import { reactive } from "vue";
 import { ElMessage } from "element-plus";
-import { GET, POST } from "@/net";
+import { _GET, _POST } from "@/net";
 import router from "@/router";
 import { useStore } from "@/stores";
 
@@ -58,13 +58,13 @@ const login = () => {
     if(!form.username || !form.password) {
         ElMessage.warning('请填写用户名和密码！')
     } else {
-        POST('/api/auth/login', {
+        _POST('/api/auth/login', {
             username: form.username,
             password: form.password,
             remember: form.remember
         }, (message) => { // 请求成功后调用回调函数，接收返回的消息
             ElMessage.success(message)
-            GET('/api/user/me', (message) => { // 请求成功后调用回调函数，接收用户信息
+            _GET('/api/user/me', (message) => { // 请求成功后调用回调函数，接收用户信息
                 store.auth.user = message
                 router.push('/index') // 导航到 '/index' 页面
             }, () => { // 如果GET请求失败，调用回调函数

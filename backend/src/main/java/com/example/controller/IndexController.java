@@ -7,4 +7,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 public class IndexController {
 
+    @PostMapping("/index")
+    public void index() {
+
+    }
 }

@@ -12,7 +12,7 @@
         <div class="items">
             <div class="item" v-for="(name, index) in keys" :key="index">
                 <div class="head">
-                    <div class="img">
+                    <div class="img" :style="set_img(name)">
                         <div class="overlay">
                             {{ name }}
                         </div>
@@ -52,7 +52,7 @@
                                 @mouseenter="(e) => change_c(e, echos['main'])"
                                 @mouseleave="(e) => change_d(e, echos['score'], echos['main'])"
                                 @click="del_echo(name, index, echos['main'])">
-                                {{ echos['score'] === '' ? '' : Number(echos['score']).toFixed(1) }}
+                                {{ echos['score'] }}
                             </td>
                         </tr>
                         </tbody>
@@ -97,7 +97,7 @@ function change_c(e, k) {
 function change_d(e, txt, k) {
     if (k === '') return
     e.target.style.padding = "10px"
-    e.target.innerText = txt === '' ? '' : Number(txt).toFixed(1)
+    e.target.innerText = txt
 }
 async function del_echo(name, index, k) {
     if (k === '') return
@@ -141,6 +141,10 @@ function set_colorbyw(w) {
         color = "gray"
     }
     return `color: ${ color }`
+}
+
+function set_img(name) {
+    return `background-image: url("/角色立绘/${name}.png");`
 }
 
 const set_style1 = (name, key) => {
@@ -238,7 +242,6 @@ onMounted(async () => {
     width: 100%;
     height: 300px;
     box-sizing: border-box;
-    background-image: url("/角色立绘/长离.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

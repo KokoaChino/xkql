@@ -51,11 +51,57 @@ public class EchoScoringSystemController {
             Map.entry("共鸣解放伤害加成", 9.0)
     );
     private static final Map<String, int[]> BASICS = Map.ofEntries( // 角色基础三维属性
-            Map.entry("长离", new int[]{1049, 10387, 1099})
+            Map.entry("长离", new int[]{1049, 10387, 1099}), // 赫奕流明
+            Map.entry("安可", new int[]{925, 10512, 1246}), // 漪澜浮录
+            Map.entry("维里奈", new int[]{674, 14237, 1099}), // 奇幻变奏
+            Map.entry("守岸人", new int[]{699, 16712, 1099}), // 星序协响
+
+            Map.entry("丹瑾", new int[]{0, 0, 0}),
+            Map.entry("今汐", new int[]{0, 0, 0}),
+            Map.entry("凌阳", new int[]{0, 0, 0}),
+            Map.entry("卡卡罗", new int[]{0, 0, 0}),
+            Map.entry("吟霖", new int[]{0, 0, 0}),
+            Map.entry("忌炎", new int[]{0, 0, 0}),
+            Map.entry("折枝", new int[]{0, 0, 0}),
+            Map.entry("散华", new int[]{0, 0, 0}),
+            Map.entry("桃祈", new int[]{0, 0, 0}),
+            Map.entry("渊武", new int[]{0, 0, 0}),
+            Map.entry("漂泊者 - 男", new int[]{0, 0, 0}),
+            Map.entry("漂泊者 - 女", new int[]{0, 0, 0}),
+            Map.entry("炽霞", new int[]{0, 0, 0}),
+            Map.entry("白芷", new int[]{0, 0, 0}),
+            Map.entry("相里要", new int[]{0, 0, 0}),
+            Map.entry("秋水", new int[]{0, 0, 0}),
+            Map.entry("秧秧", new int[]{0, 0, 0}),
+            Map.entry("莫特斐", new int[]{0, 0, 0}),
+            Map.entry("鉴心", new int[]{0, 0, 0})
     );
     private static final Map<String, int[]> WEIGTHS = Map.ofEntries( // 角色副词条权重
-            Map.entry("长离", new int[]{11, 1, 1, 20, 3, 2, 3, 8, 5})
-    );
+            Map.entry("长离", new int[]{11, 1, 1, 20, 3, 2, 3, 8, 5}),
+            Map.entry("安可", new int[]{11, 1, 1, 20, 2, 9, 2, 6, 3}),
+            Map.entry("维里奈", new int[]{17, 3, 3, 2, 20, 1, 1, 1, 0}),
+            Map.entry("守岸人", new int[]{2, 14, 1, 16, 20, 1, 1, 1, 10}),
+
+            Map.entry("丹瑾", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("今汐", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("凌阳", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("卡卡罗", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("吟霖", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("忌炎", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("折枝", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("散华", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("桃祈", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("渊武", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("漂泊者 - 男", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("漂泊者 - 女", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("炽霞", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("白芷", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("相里要", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("秋水", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("秧秧", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("莫特斐", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1}),
+            Map.entry("鉴心", new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1})
+            );
 
     private Map<String, ? extends Number> __getWeigths(String name) { // 角色完整副词条权重
         int[] w = WEIGTHS.get(name), b = BASICS.get(name);
@@ -66,7 +112,7 @@ public class EchoScoringSystemController {
                 Map.entry("百分比攻击", w[0]),
                 Map.entry("百分比生命", w[1]),
                 Map.entry("百分比防御", w[2]),
-                Map.entry("暴击率", w[3]),
+                Map.entry("暴击率", name.equals("守岸人") ? 3 : w[3]),
                 Map.entry("暴击伤害", w[3]),
                 Map.entry("共鸣效率", w[4]),
                 Map.entry("普攻伤害加成", w[5]),

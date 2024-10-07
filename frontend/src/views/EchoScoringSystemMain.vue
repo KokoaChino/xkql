@@ -143,6 +143,9 @@ const percent = ref({
 })
 const names = [
     { value: '长离', label: '长离' },
+    { value: '安可', label: '安可' },
+    { value: '维里奈', label: '维里奈' },
+    { value: '守岸人', label: '守岸人' },
 ], name = ref("长离")
 const costs = [
     { value: 1, label: 1 },
@@ -176,6 +179,16 @@ const list = ref([['', ''], ['', ''], ['', ''], ['', ''], ['', '']]), len = ref(
 
 watch(cost, (newVal) => {
     main.value = mains[newVal][0].value
+});
+
+watch(name, async (newVal) => {
+    weigths.value = await post("/echo-scoring-system/get-weigths", newVal)
+    percent.value = await POST("/echo-scoring-system/get-percent", {name: newVal, values: JSON.stringify(to_map())})
+    list.value.sort((a, b) => {
+        if (a[0] === '') return 1;
+        if (b[0] === '') return -1;
+        return percent.value[b[0]] - percent.value[a[0]]
+    })
 });
 
 const add_list = async (key, x) => {

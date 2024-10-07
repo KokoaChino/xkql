@@ -89,10 +89,10 @@ public class EchoScoringSystemController {
         return data;
     }
 
-    private void sortData(Map<String, List<EchoImpl>> data) { // 声骸列表排序
+    private void sortData(Map<String, List<EchoImpl>> data) { // 角色声骸列表排序
         for (String key: data.keySet()) {
             List<EchoImpl> list = data.get(key);
-            list.sort((a, b) -> { //
+            list.sort((a, b) -> {
                 if (a.getScore().isEmpty()) return 1;
                 else if (b.getScore().isEmpty()) return -1;
                 if (a.getCost().equals(b.getCost()))

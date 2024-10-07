@@ -6,11 +6,11 @@
                 <span>角色</span>
             </div>
             <div class="b" @mouseenter="change_a" @mouseleave="change_b" @click="add_echo">
-                <span id="text">声骸列表</span>
+                <span>声骸列表</span>
             </div>
         </div>
         <div class="items">
-            <div class="item" v-for="(name, index) in Object.keys(data)" :key="index">
+            <div class="item" v-for="(name, index) in keys" :key="index">
                 <div class="head">
                     <div class="img">
                         <div class="overlay">
@@ -48,9 +48,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" :style="set_style3(echos['score'])" :id="`score + ${index}`"
-                                @mouseenter="change_c(index, echos['main'])" @mouseleave="change_d(index, echos['score'], echos['main'])" @click="del_echo(name, index, echos['main'])">
-                                {{ echos['score'] }}
+                            <td colspan="2" :style="set_style3(echos['score'])"
+                                @mouseenter="(e) => change_c(e, echos['main'])"
+                                @mouseleave="(e) => change_d(e, echos['score'], echos['main'])"
+                                @click="del_echo(name, index, echos['main'])">
+                                {{ echos['score'] === '' ? '' : Number(echos['score']).toFixed(1) }}
                             </td>
                         </tr>
                         </tbody>
@@ -73,25 +75,29 @@ import { useStore } from "@/stores/index.js";
 provide("title", "声骸评分系统");
 const store = useStore()
 
-const data = ref({}), weigths = ref({})
+const data = ref({}), weigths = ref({}), keys = ref([])
 
-function change_a() {
-    document.getElementById("text").innerText = '添加声骸'
+function change_a(e) {
+    e.target.innerHTML = "<button style=\"width: 100%; height: 100%;font-size: 1em;color: green\" @click='add_echo'>添加声骸</button>"
+    e.target.style.fontSize = '2em';
 }
-function change_b() {
-    document.getElementById("text").innerText = '声骸列表'
+function change_b(e) {
+    e.target.innerText = '声骸列表'
+    e.target.style.fontSize = '2em';
 }
 function add_echo() {
     router.push('/echo-scoring-system/main')
 }
 
-function change_c(i, k) {
+function change_c(e, k) {
     if (k === '') return
-    document.getElementById(`score + ${i}`).innerText = '移除声骸'
+    e.target.style.padding = "0"
+    e.target.innerHTML = "<button style=\"width: 100%; height: 100%;color: red\">移除声骸</button>"
 }
-function change_d(i, txt, k) {
+function change_d(e, txt, k) {
     if (k === '') return
-    document.getElementById(`score + ${i}`).innerText = txt
+    e.target.style.padding = "10px"
+    e.target.innerText = txt === '' ? '' : Number(txt).toFixed(1)
 }
 async function del_echo(name, index, k) {
     if (k === '') return
@@ -100,6 +106,8 @@ async function del_echo(name, index, k) {
         name: name,
         index: index
     })
+    keys.value = Object.keys(data.value)
+    keys.value.sort((a, b) => get_total(b) - get_total(a))
 }
 
 function set_color(name, key) {
@@ -161,6 +169,8 @@ const get_total = (name) => {
 
 onMounted(async () => {
     data.value = await post("/echo-scoring-system/get-data", store.auth.user.username)
+    keys.value = Object.keys(data.value)
+    keys.value.sort((a, b) => get_total(b) - get_total(a))
     for (let key of Object.keys(data.value)) {
         weigths.value[key] = await post("/echo-scoring-system/get-weigths", key)
     }

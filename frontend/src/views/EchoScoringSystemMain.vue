@@ -240,8 +240,7 @@ async function add_echo() {
         ElMessage.warning("声骸副词条个数不合法！");
         return
     }
-    console.log(name.value in Object.keys(data.value))
-    if (name.value in Object.keys(data.value)) {
+    if (Object.keys(data.value).includes(name.value)) {
         let len = 0, sum = 0
         for (let item of data.value[name.value]) {
             if (item.main !== '') {
@@ -253,7 +252,6 @@ async function add_echo() {
             ElMessage.warning("该角色的声骸列表已满！");
             return
         }
-        console.log(sum, cost.value)
         if (sum + cost.value > 12) {
             ElMessage.warning("该角色声骸的 Cost 不合法！");
             return

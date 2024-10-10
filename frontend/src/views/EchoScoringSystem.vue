@@ -2,7 +2,7 @@
     <Title/>
     <div class="content">
         <div class="head">
-            <div class="a">
+            <div class="a" @mouseenter="change_e" @mouseleave="change_f" @click="re_echo">
                 <span>角色</span>
             </div>
             <div class="b" @mouseenter="change_a" @mouseleave="change_b" @click="add_echo">
@@ -108,6 +108,18 @@ async function del_echo(name, index, k) {
     })
     keys.value = Object.keys(data.value)
     keys.value.sort((a, b) => get_total(b) - get_total(a))
+}
+
+function change_e(e) {
+    e.target.innerHTML = "<button style=\"width: 100%; height: 100%;font-size: 1em;color: green\" @click='add_echo'>刷新数据</button>"
+    e.target.style.fontSize = '2em';
+}
+function change_f(e) {
+    e.target.innerText = '角色'
+    e.target.style.fontSize = '2em';
+}
+async function re_echo() {
+    data.value = await post("/echo-scoring-system/re-data", store.auth.user.username)
 }
 
 function set_color(name, key) {

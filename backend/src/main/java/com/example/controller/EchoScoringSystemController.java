@@ -122,6 +122,29 @@ public class EchoScoringSystemController {
         );
     }
 
+    private Map<String, Number> __calculateScore(String name, Map<String, Number> values) { // 计算声骸评分
+        Map<String, ? extends Number> weigths = __getWeigths(name); // 角色完整副词条权重
+        Map<String, Number> res = new LinkedHashMap<>(); // 返回值
+        List<Map.Entry<String, Double>> pairs = new ArrayList<>();
+        for (String key: KEYS) {
+            double value = weigths.get(key).doubleValue() * VALUES.get(key)[0] / AVERAGE.get(key);
+            pairs.add(new AbstractMap.SimpleEntry<>(key, value));
+        }
+        pairs.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        double maxScore = pairs.stream().limit(5).mapToDouble(Map.Entry::getValue).sum(); // 理论最大分数
+        double myScore = 0; // 实际分数
+        for (String key: values.keySet()) {
+            double score = weigths.get(key).doubleValue() * values.get(key).doubleValue() / AVERAGE.get(key);
+            myScore += score;
+            res.put(key, score);
+        }
+        for (String key: values.keySet()) {
+            res.put(key, (int) Math.round(res.get(key).doubleValue() * 100 / myScore)); // 每个副词条对总得分的贡献百分比
+        }
+        res.put("总得分", (int) Math.round(myScore * 100 / maxScore)); // 总得分
+        return res;
+    }
+
     private Map<String, List<EchoImpl>> findData(String username) { // 查找角色词条数据
         String s = mapper.findEchoScoringSystem(username);
         Map<String, List<EchoImpl>> data;
@@ -164,32 +187,36 @@ public class EchoScoringSystemController {
     public Map<String, Number> calculateScore(@RequestParam("name") String name,
                                               @RequestParam("values") String json) { // 计算声骸评分
         Map<String, Number> values = JSON.parseObject(json, new TypeReference<Map<String, Number>>() {}); // 输入副词条数据
-        Map<String, ? extends Number> weigths = __getWeigths(name); // 角色完整副词条权重
-        Map<String, Number> res = new LinkedHashMap<>(); // 返回值
-        List<Map.Entry<String, Double>> pairs = new ArrayList<>();
-        for (String key: KEYS) {
-            double value = weigths.get(key).doubleValue() * VALUES.get(key)[0] / AVERAGE.get(key);
-            pairs.add(new AbstractMap.SimpleEntry<>(key, value));
-        }
-        pairs.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        double maxScore = pairs.stream().limit(5).mapToDouble(Map.Entry::getValue).sum(); // 理论最大分数
-        double myScore = 0; // 实际分数
-        for (String key: values.keySet()) {
-            double score = weigths.get(key).doubleValue() * values.get(key).doubleValue() / AVERAGE.get(key);
-            myScore += score;
-            res.put(key, score);
-        }
-        for (String key: values.keySet()) {
-            res.put(key, (int) Math.round(res.get(key).doubleValue() * 100 / myScore)); // 每个副词条对总得分的贡献百分比
-        }
-        res.put("总得分", (int) Math.round(myScore * 100 / maxScore)); // 总得分
-        return res;
+        return __calculateScore(name, values);
     }
 
     @PostMapping("/get-data")
     public Map<String, List<EchoImpl>> getData(@RequestBody String username) { // 获取数据
         username = username.substring(1, username.length() - 1);
         return findData(username);
+    }
+
+    @PostMapping("/re-data")
+    public Map<String, List<EchoImpl>> reData(@RequestBody String username) { // 重新计算数据
+        username = username.substring(1, username.length() - 1);
+        Map<String, List<EchoImpl>> data = findData(username);
+        for (String name: data.keySet()) {
+            for (EchoImpl e: data.get(name)) {
+                Map<String, Number> values = new HashMap<>();
+                List<List<String>> echo = e.getEcho();
+                for (int i = 0; i < 5; i++) {
+                    List<String> echoRow = echo.get(i);
+                    values.put(echoRow.get(0), Double.parseDouble(echoRow.get(1)));
+                }
+                Map<String, Number> tmp = __calculateScore(name, values);
+                for (int i = 0; i < 5; i++) {
+                    List<String> echoRow = echo.get(i);
+                    echoRow.set(2, tmp.get(echoRow.get(0)).toString());
+                }
+                e.setScore(tmp.get("总得分").toString());
+            }
+        }
+        return data;
     }
 
     @PostMapping("/add-data")

@@ -50,7 +50,7 @@ import { ElMessage } from "element-plus";
 provide("title", "连连看游戏");
 const store = useStore()
 
-const n = ref(5); // 方阵大小
+const n = ref(4); // 方阵大小
 const g = ref([]); // 节点属性方阵
 const G = ref([]); // 方阵数组
 const p = ref(0); // 方阵数组的下标
@@ -127,7 +127,7 @@ const set_style = (index, cell) => {
 }
 
 function formatSeconds(seconds) {
-    return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+    return `${String(Math.floor(seconds / 60)).padStart(2, '0')} : ${String(seconds % 60).padStart(2, '0')}`;
 }
 
 const set_path = (i, j) => {

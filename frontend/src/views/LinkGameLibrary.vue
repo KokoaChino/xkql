@@ -55,7 +55,7 @@ import { ElMessage } from "element-plus";
 
 provide("title", "连连看游戏库");
 
-const n = ref(5); // 方阵大小
+const n = ref(4); // 方阵大小
 const g = ref([]); // 节点属性方阵
 const G = ref([]); // 方阵数组
 const p = ref(0); // 方阵数组的下标

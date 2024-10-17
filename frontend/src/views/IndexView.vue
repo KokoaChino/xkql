@@ -29,25 +29,31 @@
         </div>
         <br>
         <div class="outermost">
-            <div class="item">
+            <div class="item" @click="guess_number">
                 <img src="/icon/GuessNumber.png" alt="猜数字游戏">
-                <button role="button" class="button-name" @click="guess_number">猜数字游戏</button>
+                <button role="button" class="button-name">猜数字游戏</button>
             </div>
-            <div class="item">
+            <div class="item" @click="character_map">
                 <img src="/icon/CharacterMap.png" alt="角色自截图">
-                <button role="button" class="button-name" @click="character_map">角色自截图</button>
+                <button role="button" class="button-name">角色自截图</button>
             </div>
-            <div class="item">
-                <img src="/icon/LinkGame.png" alt="连连看游戏">
-                <button role="button" class="button-name" @click="link_game">连连看游戏</button>
+            <div class="item" @click="link_game">
+                <img src="/icon/LinkGame.png" alt="连连看游戏"
+                     :style="{ transform: `scale(${ scales[0] })` }"
+                     @mouseenter="scales[0] *= 1.05"
+                     @mouseleave="scales[0] /= 1.05">
+                <button role="button" class="button-name">连连看游戏</button>
             </div>
-            <div class="item">
-                <img src="/icon/EchoScoringSystem.png" alt="声骸评分系统">
-                <button role="button" class="button-name" @click="echo_scoring_system">声骸评分系统</button>
+            <div class="item" @click="echo_scoring_system">
+                <img src="/icon/EchoScoringSystem.png" alt="声骸评分系统"
+                     :style="{ transform: `scale(${ scales[1] })` }"
+                     @mouseenter="scales[1] *= 1.05"
+                     @mouseleave="scales[1] /= 1.05">
+                <button role="button" class="button-name">声骸评分系统</button>
             </div>
-            <div class="item">
+            <div class="item" @click="test">
                 <img src="/icon/Test.png" alt="Test">
-                <button role="button" class="button-name" @click="test">Test</button>
+                <button role="button" class="button-name">Test</button>
             </div>
         </div>
     </div>
@@ -61,11 +67,12 @@ import { ElMessage } from "element-plus";
 import router from "@/router";
 import { useStore } from "@/stores";
 import Title from '@/components/module/Title.vue';
-import { provide } from "vue";
+import { provide, ref } from "vue";
 
 provide("title", "星开祈灵的小项目");
 
 const store = useStore()
+const scales = ref([0.7, 0.7])
 
 const logout = () => {
     _GET('/api/auth/logout', (message) => {
@@ -134,6 +141,7 @@ const test = async () => {
 .item img {
     width: 100%;
     height: 78.5%;
+    transition: transform 0.3s ease;
 }
 .item img:hover {
     transform: scale(1.05);

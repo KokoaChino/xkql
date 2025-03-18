@@ -7,17 +7,17 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
-@Configuration // Spring 配置类
-public class WebConfiguration implements WebMvcConfigurer { // 用于自定义 Spring MVC 配置
+@Configuration
+public class WebConfiguration implements WebMvcConfigurer {
 
     @Resource
-    AuthorizeInterceptor interceptor; // 用于处理请求拦截
+    AuthorizeInterceptor interceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) { // 配置自定义拦截器
-        registry // 用于注册拦截器
-                .addInterceptor(interceptor) // 添加 AuthorizeInterceptor 到拦截器注册表
-                .addPathPatterns("/**") // 设置拦截器拦截所有路径
-                .excludePathPatterns("/api/auth/**"); // 排除 /api/auth/ 路径下的请求不被拦截
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry
+                .addInterceptor(interceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/api/auth/**");
     }
 }

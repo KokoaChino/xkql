@@ -2,12 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useStore } from "@/stores";
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL), // 使用 HTML5 的 history 模式，基础 URL 来自环境变量
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
             name: 'welcome',
-            component: () => import('@/views/WelcomeView.vue'),
+            component: () => import('@/views/common/WelcomeView.vue'),
             children: [
                 {
                     path: '',
@@ -26,7 +26,7 @@ const router = createRouter({
         }, {
             path: '/index',
             name: 'index',
-            component: () => import('@/views/IndexView.vue'),
+            component: () => import('@/views/common/IndexView.vue'),
             meta: {
                 title: '主页',
                 icon: '/favicon.png'
@@ -34,7 +34,7 @@ const router = createRouter({
         }, {
             path: '/test',
             name: 'test',
-            component: () => import('@/views/Test.vue'),
+            component: () => import('@/views/common/Test.vue'),
             meta: {
                 title: 'Test',
                 icon: '/icon/Test.png'
@@ -42,7 +42,7 @@ const router = createRouter({
         }, {
             path: '/guess-number',
             name: 'guess-number',
-            component: () => import('@/views/GuessNumber.vue'),
+            component: () => import('@/views/GuessNumber/GuessNumber.vue'),
             meta: {
                 title: '猜数字游戏',
                 icon: '/icon/GuessNumber.png'
@@ -50,15 +50,15 @@ const router = createRouter({
         }, {
             path: '/guess-number/playing',
             name: 'guess-number-playing',
-            component: () => import('@/views/GuessNumberPlaying.vue')
+            component: () => import('@/views/GuessNumber/GuessNumberPlaying.vue')
         }, {
             path: '/guess-number/historical-record',
             name: 'guess-number-historical-record',
-            component: () => import('@/views/GuessNumberHistoricalRecord.vue')
+            component: () => import('@/views/GuessNumber/GuessNumberHistoricalRecord.vue')
         }, {
             path: '/character-map',
             name: 'character-map',
-            component: () => import('@/views/CharacterMap.vue'),
+            component: () => import('@/views/CharacterMap/CharacterMap.vue'),
             meta: {
                 title: '角色自截图',
                 icon: '/icon/CharacterMap.png'
@@ -66,46 +66,38 @@ const router = createRouter({
         }, {
             path: '/character-map/sub',
             name: 'character-map/sub',
-            component: () => import('@/views/CharacterMapSub.vue')
+            component: () => import('@/views/CharacterMap/CharacterMapSub.vue')
         }, {
             path: '/link-game',
             name: 'link-game',
-            component: () => import('@/views/LinkGame.vue')
+            component: () => import('@/views/LinkGame/LinkGame.vue')
         }, {
             path: '/link-game/set-game',
             name: 'link-game/set-game',
-            component: () => import('@/views/LinkGameLibrary.vue')
+            component: () => import('@/views/LinkGame/LinkGameLibrary.vue')
         }, {
             path: '/link-game/game-start',
             name: 'link-game/game-start',
-            component: () => import('@/views/LinkGamePlaying.vue')
+            component: () => import('@/views/LinkGame/LinkGamePlaying.vue')
         }, {
             path: '/link-game/historical-record',
             name: 'link-game/historical-record',
-            component: () => import('@/views/LinkGameHistoricalRecord.vue')
-        }, {
-            path: '/echo-scoring-system',
-            name: 'echo-scoring-system',
-            component: () => import('@/views/EchoScoringSystem.vue')
-        }, {
-            path: '/echo-scoring-system/main',
-            name: 'echo-scoring-system/main',
-            component: () => import('@/views/EchoScoringSystemMain.vue')
+            component: () => import('@/views/LinkGame/LinkGameHistoricalRecord.vue')
         }
     ]
 })
 
-router.beforeEach((to, from, next) => { // 在每次路由导航发生前进行拦截
-    const store = useStore() // 使用 useStore 获取 Vuex 状态管理实例
-    if(store.auth.user != null && to.name.startsWith('welcome-')) { // 如果用户已登录且目标路由是 welcome 开头的路由
-        next('/index') // 重定向到 '/index' 页面
-    } else if(store.auth.user == null && to.fullPath.startsWith('/index')) { // 如果用户未登录且目标路由是 '/index'
-        next('/') // 重定向到根页面 '/'
-    } else if(to.matched.length === 0) { // 如果没有匹配到任何路由
-        next('/index') // 重定向到 '/index' 页面
+router.beforeEach((to, from, next) => {
+    const store = useStore()
+    if(store.auth.user != null && to.name.startsWith('welcome-')) {
+        next('/index')
+    } else if(store.auth.user == null && to.fullPath.startsWith('/index')) {
+        next('/')
+    } else if(to.matched.length === 0) {
+        next('/index')
     } else {
-        next() // 否则，继续导航
+        next()
     }
 })
 
-export default router // 导出 router 实例，以便在其他地方使用
+export default router

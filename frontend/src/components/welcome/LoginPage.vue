@@ -5,7 +5,7 @@
             <div style="font-size: 14px;color: grey">请输入用户名和密码进行登录</div>
         </div>
         <div style="margin-top: 50px">
-            <el-input v-model="form.username" type="text" placeholder="用户名/邮箱">
+            <el-input v-model="form.username" type="text" placeholder="用户名 / 邮箱">
                 <template #prefix>
                     <el-icon><User /></el-icon>
                 </template>

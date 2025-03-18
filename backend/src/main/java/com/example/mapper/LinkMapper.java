@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface LinkMapper {
+
     @Select("select json from link_game_library where id = #{id}")
     String findLinkById(int id);
 

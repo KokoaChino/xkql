@@ -13,6 +13,7 @@
         "element-plus": "^2.8.0",
         "lodash": "^4.17.21",
         "pinia": "^2.1.7",
+        "pinia-plugin-persistedstate": "^4.2.0",
         "swiper": "^11.1.14",
         "vue": "^3.4.29",
         "vue-axios": "^3.5.2",

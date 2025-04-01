@@ -44,6 +44,10 @@
                      @mouseleave="scales[0] /= 1.05">
                 <button role="button" class="button-name">连连看游戏</button>
             </div>
+            <div class="item" @click="crawler">
+                <img src="/icon/Crawler.png" alt="简单爬虫脚本">
+                <button role="button" class="button-name">简单爬虫脚本</button>
+            </div>
             <div class="item" @click="test">
                 <img src="/icon/Test.png" alt="Test">
                 <button role="button" class="button-name">Test</button>
@@ -87,13 +91,17 @@ const link_game = async () => {
     await router.push('/link-game')
 }
 
-const unsubscribe = async () => {
-    logout()
-    await post("api/auth/unsubscribe", store.auth.user.username)
+const crawler = async () => {
+    await router.push('/crawler')
 }
 
 const test = async () => {
     await router.push('/test')
+}
+
+const unsubscribe = async () => {
+    logout()
+    await post("api/auth/unsubscribe", store.auth.user.username)
 }
 </script>
 

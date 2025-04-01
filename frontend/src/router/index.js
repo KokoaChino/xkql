@@ -42,7 +42,7 @@ const router = createRouter({
         }, {
             path: '/guess-number',
             name: 'guess-number',
-            component: () => import('@/views/GuessNumber/GuessNumber.vue'),
+            component: () => import('@/views/guessNumber/GuessNumber.vue'),
             meta: {
                 title: '猜数字游戏',
                 icon: '/icon/GuessNumber.png'
@@ -50,15 +50,15 @@ const router = createRouter({
         }, {
             path: '/guess-number/playing',
             name: 'guess-number-playing',
-            component: () => import('@/views/GuessNumber/GuessNumberPlaying.vue')
+            component: () => import('@/views/guessNumber/GuessNumberPlaying.vue')
         }, {
             path: '/guess-number/historical-record',
             name: 'guess-number-historical-record',
-            component: () => import('@/views/GuessNumber/GuessNumberHistoricalRecord.vue')
+            component: () => import('@/views/guessNumber/GuessNumberHistoricalRecord.vue')
         }, {
             path: '/character-map',
             name: 'character-map',
-            component: () => import('@/views/CharacterMap/CharacterMap.vue'),
+            component: () => import('@/views/characterMap/CharacterMap.vue'),
             meta: {
                 title: '角色自截图',
                 icon: '/icon/CharacterMap.png'
@@ -66,23 +66,35 @@ const router = createRouter({
         }, {
             path: '/character-map/sub',
             name: 'character-map/sub',
-            component: () => import('@/views/CharacterMap/CharacterMapSub.vue')
+            component: () => import('@/views/characterMap/CharacterMapSub.vue')
         }, {
             path: '/link-game',
             name: 'link-game',
-            component: () => import('@/views/LinkGame/LinkGame.vue')
+            component: () => import('@/views/linkGame/LinkGame.vue'),
+            meta: {
+                title: '连连看游戏',
+                icon: '/icon/LinkGame.png'
+            }
         }, {
             path: '/link-game/set-game',
             name: 'link-game/set-game',
-            component: () => import('@/views/LinkGame/LinkGameLibrary.vue')
+            component: () => import('@/views/linkGame/LinkGameLibrary.vue')
         }, {
             path: '/link-game/game-start',
             name: 'link-game/game-start',
-            component: () => import('@/views/LinkGame/LinkGamePlaying.vue')
+            component: () => import('@/views/linkGame/LinkGamePlaying.vue')
         }, {
             path: '/link-game/historical-record',
             name: 'link-game/historical-record',
-            component: () => import('@/views/LinkGame/LinkGameHistoricalRecord.vue')
+            component: () => import('@/views/linkGame/LinkGameHistoricalRecord.vue')
+        }, {
+            path: '/crawler',
+            name: 'crawler',
+            component: () => import('@/views/crawler/Crawler.vue'),
+            meta: {
+                title: '简单爬虫脚本',
+                icon: '/icon/LinkGame.png'
+            }
         }
     ]
 })

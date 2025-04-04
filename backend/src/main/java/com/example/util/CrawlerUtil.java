@@ -40,7 +40,7 @@ public class CrawlerUtil {
     ));
 
     private static final Map<String, Map<String, String>> P = new ConcurrentHashMap<>();
-    private static final Map<String, Thread> TM = new ConcurrentHashMap<>();
+    private static final Map<String, Thread> T = new ConcurrentHashMap<>();
     private static final Map<String, Set<String>> URLS = new ConcurrentHashMap<>();
 
     public static boolean isDownloadableFile(String url) {
@@ -112,15 +112,22 @@ public class CrawlerUtil {
                 if (mode.equals("download")) {
                     if (isDownloadableFile(baseUrl)) URLS.get(username).add(baseUrl);
                 } else URLS.get(username).add(baseUrl);
+            } catch (InterruptedException e) {
+                P.remove(username);
+                T.remove(username);
+                URLS.remove(username);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
-        TM.put(username, thread);
+        T.put(username, thread);
         thread.start();
     }
 
     private static void dfs(String username, int deep, String link) throws Exception {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new InterruptedException("用户已停止任务");
+        }
         Set<String> links = URLS.get(username);
         String mode = P.get(username).get("mode");
         int maxDeep = Integer.parseInt(P.get(username).get("maxDeep"));
@@ -144,7 +151,7 @@ public class CrawlerUtil {
                                 dfs(username, deep + 1, newLink);
                             }
                         } catch (URISyntaxException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                     }
                 }
@@ -156,15 +163,15 @@ public class CrawlerUtil {
 
     public static List<String> getAllLinks(String username) {
         List<String> links = new ArrayList<>(URLS.get(username).stream().sorted().toList());
-        if (!TM.get(username).isAlive()) links.add(null);
+        if (!T.get(username).isAlive()) links.add(null);
         return links;
     }
 
     public static void stopTask(String username) {
-        Thread thread = TM.get(username);
-        thread.interrupt();
+        Thread thread = T.get(username);
+        if (thread != null) thread.interrupt();
         P.remove(username);
-        TM.remove(username);
+        T.remove(username);
         URLS.remove(username);
     }
 }

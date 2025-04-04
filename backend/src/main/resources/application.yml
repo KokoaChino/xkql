@@ -20,3 +20,7 @@ spring:
       database: 0
       host: localhost
       port: 6379
+  servlet:
+    multipart:
+      max-file-size: 1000MB # 允许单个文件的最大大小
+      max-request-size: 1024MB # 允许整个请求的最大大小

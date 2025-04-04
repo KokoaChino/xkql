@@ -1,4 +1,5 @@
 <template>
+    <Title/>
     <div class="container">
         <el-input
             v-loading="isRunning"
@@ -60,10 +61,13 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import { GET, post, POST } from '@/net/index.js';
 import { useStore } from '@/stores/index.js';
 import { onBeforeRouteLeave } from "vue-router";
+import Title from "@/components/layout/Title.vue";
+
+provide("title", "简单爬虫脚本");
 
 const store = useStore();
 const url = ref('');

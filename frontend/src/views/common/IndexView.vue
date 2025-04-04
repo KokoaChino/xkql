@@ -29,13 +29,17 @@
         </div>
         <br>
         <div class="outermost">
+            <div class="item" @click="crawler">
+                <img src="/icon/Crawler.png" alt="简单爬虫脚本">
+                <button role="button" class="button-name">简单爬虫脚本</button>
+            </div>
+            <div class="item" @click="watermark">
+                <img src="/icon/BatchImageWatermarker.png" alt="批量图片水印处理">
+                <button role="button" class="button-name">批量图片水印处理</button>
+            </div>
             <div class="item" @click="guess_number">
                 <img src="/icon/GuessNumber.png" alt="猜数字游戏">
                 <button role="button" class="button-name">猜数字游戏</button>
-            </div>
-            <div class="item" @click="character_map">
-                <img src="/icon/CharacterMap.png" alt="角色自截图">
-                <button role="button" class="button-name">角色自截图</button>
             </div>
             <div class="item" @click="link_game">
                 <img src="/icon/LinkGame.png" alt="连连看游戏"
@@ -44,9 +48,9 @@
                      @mouseleave="scales[0] /= 1.05">
                 <button role="button" class="button-name">连连看游戏</button>
             </div>
-            <div class="item" @click="crawler">
-                <img src="/icon/Crawler.png" alt="简单爬虫脚本">
-                <button role="button" class="button-name">简单爬虫脚本</button>
+            <div class="item" @click="character_map">
+                <img src="/icon/CharacterMap.png" alt="角色自截图">
+                <button role="button" class="button-name">角色自截图</button>
             </div>
             <div class="item" @click="test">
                 <img src="/icon/Test.png" alt="Test">
@@ -93,6 +97,10 @@ const link_game = async () => {
 
 const crawler = async () => {
     await router.push('/crawler')
+}
+
+const watermark = async () => {
+    await router.push('/batch-image-watermarker')
 }
 
 const test = async () => {

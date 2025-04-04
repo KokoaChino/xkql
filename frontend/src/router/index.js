@@ -95,6 +95,14 @@ const router = createRouter({
                 title: '简单爬虫脚本',
                 icon: '/icon/LinkGame.png'
             }
+        }, {
+            path: '/batch-image-watermarker',
+            name: 'batch-image-watermarker',
+            component: () => import('@/views/BatchImageWatermarker/BatchImageWatermarker.vue'),
+            meta: {
+                title: '批量图片水印处理',
+                icon: '/icon/BatchImageWatermarker.png'
+            }
         }
     ]
 })

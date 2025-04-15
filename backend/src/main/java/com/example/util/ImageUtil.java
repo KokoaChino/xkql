@@ -1,145 +1,133 @@
 package com.example.util;
 
+import com.example.entity.order.WatermarkParams;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class ImageUtil {
 
-    public static void processImage(int mode, File file, String watermark, OutputStream outputStream) { // 处理图片
+    public static final java.util.List<WatermarkParams> P = List.of(
+            WatermarkParams.builder()
+                    .x(90).y(1165).dx(-10)
+                    .fontName("Source Han Sans CN").fontSize(130).fontColor(new Color(254, 249, 233))
+                    .build(),
+            WatermarkParams.builder()
+                    .x(90).y(1165).dx(-10)
+                    .fontName("Source Han Sans CN").fontSize(130)
+                    .fontGradient(WatermarkParams.GradientParams.builder()
+                            .startColor(new Color(254, 249, 233))
+                            .end(new Point(80, 80))
+                            .endColor(new Color(220, 176, 119))
+                            .build())
+                    .build(),
+            WatermarkParams.builder()
+                    .x(333).y(510).dy(-3)
+                    .fontStyles(Font.BOLD | Font.ITALIC).fontSize(55).fontColor(Color.WHITE)
+                    .strokeSize(5).strokeColor(new Color(250, 65, 10))
+                    .build(),
+            WatermarkParams.builder()
+                    .x(70).y(705).dx(-8)
+                    .fontName("DIN").fontStyles(Font.BOLD).fontColor(new Color(227, 34, 17))
+                    .build(),
+            WatermarkParams.builder()
+                    .x(840).y(1175).dx(-3)
+                    .fontName("HarmonyOS Sans SC").fontStyles(Font.BOLD | Font.ITALIC).fontSize(140).fontColor(new Color(0xfdf04a))
+                    .strokeSize(6).strokeColor(new Color(0x065223))
+                    .build()
+    );
+
+    public static void handleImage(int mode, File file, String watermark, OutputStream outputStream) { // 处理图片
         try {
             Image image = ImageIO.read(file);
-            BufferedImage bufferedImage = getBufferedImage(mode, image, watermark);
+            BufferedImage bufferedImage = handleWatermark(mode, image, watermark);
             ImageIO.write(bufferedImage, "jpg", outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static BufferedImage getBufferedImage(int mode, Image image, String watermark) { // 获取加了水印的图片缓存
-        return switch (mode) {
-            case 1 -> fun_1(image, watermark); // 单一颜色
-            case 2 -> fun_2(image, watermark); // 渐变颜色
-            case 3 -> fun_3(image, watermark); // 斜体
-            case 4 -> fun_4(image, watermark); // 左侧居中-水平
-            case 5 -> fun_5(image, watermark); // 右下黄色
-            default -> throw new IllegalStateException("模式设置错误！");
-        };
-    }
-
-    public static BufferedImage fun_1(Image image, String watermark) {
-        int width = image.getWidth(null), height = image.getHeight(null); // 图片宽高
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 图片缓存
-        Graphics2D graphics = bufferedImage.createGraphics(); // 画笔
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 抗锯齿
-        graphics.drawImage(image, 0, 0, width, height, null); // 初始画布
-        graphics.setFont(new Font("Source Han Sans CN", Font.PLAIN, 130)); // 字体类型 字体风格 字体大小
-        graphics.setColor(new Color(254, 249, 233)); // 颜色
-        FontMetrics fm = graphics.getFontMetrics(); // 获取字体的尺寸
-        for (int i = 0, x = 90; i < watermark.length(); i++) { // 画水印
-            char c = watermark.charAt(i);
-            graphics.drawString(String.valueOf(c), x, 1165);
-            x += fm.charWidth(c) - 10;
+    public static BufferedImage handleWatermark(int mode, Image image, String watermark) { // 处理图片水印
+        WatermarkParams p;
+        try {
+            p = P.get(mode - 1);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalStateException("模式设置错误！");
         }
-        graphics.dispose();
-        return bufferedImage;
-    }
-
-    public static BufferedImage fun_2(Image image, String watermark) {
-        int width = image.getWidth(null), height = image.getHeight(null); // 图片宽高
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 图片缓存
-        Graphics2D graphics = bufferedImage.createGraphics(); // 画笔
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 抗锯齿
-        graphics.drawImage(image, 0, 0, width, height, null); // 初始画布
-        graphics.setFont(new Font("Source Han Sans CN", Font.PLAIN, 130)); // 字体类型 字体风格 字体大小
-        graphics.setPaint(new GradientPaint(0, 0, new Color(254, 249, 233), 80, 80, new Color(220, 176, 119), true)); // 渐变颜色
-        FontMetrics fm = graphics.getFontMetrics(); // 获取字体的尺寸
-        for (int i = 0, x = 90; i < watermark.length(); i++) { // 画水印
-            char c = watermark.charAt(i);
-            graphics.drawString(String.valueOf(c), x, 1165);
-            x += fm.charWidth(c) - 10;
+        int width = image.getWidth(null), height = image.getHeight(null);
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bufferedImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.drawImage(image, 0, 0, width, height, null);
+        g.setFont(new Font(p.getFontName(), p.getFontStyles(), p.getFontSize())); // 字体
+        FontMetrics fm = g.getFontMetrics();
+        if (!Float.isNaN(p.getRotation()) || !Float.isNaN(p.getShearX())) { // 仿射变换
+            g.transform(getAffineTransform(p));
         }
-        graphics.dispose();
-        return bufferedImage;
-    }
-
-    public static BufferedImage fun_3(Image image, String watermark) {
-        int width = image.getWidth(null), height = image.getHeight(null); // 图片宽高
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 图片缓存
-        Graphics2D graphics = bufferedImage.createGraphics(); // 画笔
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 抗锯齿
-        graphics.drawImage(image, 0, 0, width, height, null); // 初始画布
-        graphics.setFont(new Font("微软雅黑", Font.BOLD + Font.ITALIC, 55)); // 字体类型 字体风格 字体大小
-        FontMetrics fm = graphics.getFontMetrics(); // 获取字体的尺寸
-        graphics.setColor(new Color(250, 65, 10)); // 描边颜色
-        for (int i = 0, x = 333, y = 510, gap = 5; i < watermark.length(); i++) { // 画描边
-            char c = watermark.charAt(i);
-            for (int j = -gap; j <= gap; j++) {
-                for (int k = -gap; k <= gap; k++) {
-                    graphics.drawString(String.valueOf(c), x + j, y + k);
-                }
+        if (p.getStrokeSize() != null) { // 描边
+            if (p.getStrokeGradient() != null) {
+                WatermarkParams.GradientParams gp = p.getStrokeGradient();
+                g.setPaint(new GradientPaint(gp.getStart(), gp.getStartColor(), gp.getEnd(), gp.getEndColor(), gp.getCyclic()));
+            } else {
+                g.setColor(p.getStrokeColor());
             }
-            x += fm.charWidth(c);
-            y -= 3;
-        }
-        graphics.setColor(Color.WHITE); // 颜色
-        for (int i = 0, x = 333, y = 510; i < watermark.length(); i++) { // 画水印
-            char c = watermark.charAt(i);
-            graphics.drawString(String.valueOf(c), x, y);
-            x += fm.charWidth(c);
-            y -= 3;
-        }
-        graphics.dispose();
-        return bufferedImage;
-    }
-
-    public static BufferedImage fun_4(Image image, String watermark) {
-        int width = image.getWidth(null), height = image.getHeight(null); // 图片宽高
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 图片缓存
-        Graphics2D graphics = bufferedImage.createGraphics(); // 画笔
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 抗锯齿
-        graphics.drawImage(image, 0, 0, width, height, null); // 初始画布
-        graphics.setFont(new Font("DIN", Font.BOLD, 100)); // 字体类型 字体风格 字体大小
-        graphics.setColor(new Color(227, 34, 17)); // 颜色
-        FontMetrics fm = graphics.getFontMetrics(); // 获取字体的尺寸
-        for (int i = 0, x = 70; i < watermark.length(); i++) { // 画水印
-            char c = watermark.charAt(i);
-            graphics.drawString(String.valueOf(c), x, 705);
-            x += fm.charWidth(c) - 8;
-        }
-        graphics.dispose();
-        return bufferedImage;
-    }
-
-    public static BufferedImage fun_5(Image image, String watermark) {
-        int width = image.getWidth(null), height = image.getHeight(null); // 图片宽高
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 图片缓存
-        Graphics2D graphics = bufferedImage.createGraphics(); // 画笔
-        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); // 抗锯齿
-        graphics.drawImage(image, 0, 0, width, height, null); // 初始画布
-        graphics.setFont(new Font("HarmonyOS Sans SC", Font.BOLD + Font.ITALIC, 140)); // 字体类型 字体风格 字体大小
-        FontMetrics fm = graphics.getFontMetrics(); // 获取字体的尺寸
-        graphics.setColor(new Color(0x065223)); // 描边颜色
-        for (int i = 0, x = 840, y = 1175, gap = 6; i < watermark.length(); i++) { // 画描边
-            char c = watermark.charAt(i);
-            for (int j = -gap; j <= gap; j++) {
-                for (int k = -gap; k <= gap; k++) {
-                    graphics.drawString(String.valueOf(c), x + j, y + k);
+            for (int i = 0, x = p.getX(), y = p.getY(), gap = p.getStrokeSize(); i < watermark.length(); i++) {
+                char c = watermark.charAt(i);
+                for (int j = -gap; j <= gap; j++) {
+                    for (int k = -gap; k <= gap; k++) {
+                        g.drawString(String.valueOf(c), x + j, y + k);
+                    }
                 }
+                x += (p.getIncludeCharWidthInDx() ? fm.charWidth(c) : 0) + p.getDx();
+                y += (p.getIncludeCharHeightInDy() ? fm.getAscent() : 0) + p.getDy();
             }
-            x += fm.charWidth(c) - 3;
         }
-        graphics.setColor(new Color(0xfdf04a)); // 颜色
-        for (int i = 0, x = 840, y = 1175; i < watermark.length(); i++) { // 画水印
+        if (p.getFontGradient() != null) {
+            WatermarkParams.GradientParams gp = p.getFontGradient();
+            g.setPaint(new GradientPaint(gp.getStart(), gp.getStartColor(), gp.getEnd(), gp.getEndColor(), gp.getCyclic()));
+        } else {
+            g.setColor(p.getFontColor());
+        }
+        for (int i = 0, x = p.getX(), y = p.getY(); i < watermark.length(); i++) {
             char c = watermark.charAt(i);
-            graphics.drawString(String.valueOf(c), x, y);
-            x += fm.charWidth(c) - 3;
+            g.drawString(String.valueOf(c), x, y);
+            x += (p.getIncludeCharWidthInDx() ? fm.charWidth(c) : 0) + p.getDx();
+            y += (p.getIncludeCharHeightInDy() ? fm.getAscent() : 0) + p.getDy();
         }
-        graphics.dispose();
+        g.dispose();
         return bufferedImage;
+    }
+
+    private static AffineTransform getAffineTransform(WatermarkParams p) { // 获取仿射变换
+        AffineTransform transform = new AffineTransform();
+        if (!Float.isNaN(p.getRotation()) && !Float.isNaN(p.getShearX())) {
+            if (p.getPriorityRotation()) {
+                transform.rotate(p.getRotation());
+                transform.shear(p.getShearX(), 0);
+            } else {
+                transform.shear(p.getShearX(), 0);
+                transform.rotate(p.getRotation());
+            }
+        } else if (!Float.isNaN(p.getRotation())) {
+            transform.rotate(p.getRotation());
+        } else {
+            transform.shear(p.getShearX(), 0);
+        }
+        return transform;
+    }
+
+    public static boolean check(String targetFont) { // 检查系统是否安装有目标字体
+        String[] fontNames =  GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        Set<String> fontList = Arrays.stream(fontNames).collect(Collectors.toSet());
+        return fontList.contains(targetFont);
     }
 }

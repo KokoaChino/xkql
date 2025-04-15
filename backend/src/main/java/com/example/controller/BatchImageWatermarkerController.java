@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import com.example.dto.WatermarkDataDTO;
+import com.example.dto.WatermarkParamsDTO;
 import com.example.service.api.BatchImageWatermarkerService;
 import jakarta.annotation.Resource;
 import org.springframework.core.io.InputStreamResource;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,5 +47,16 @@ public class BatchImageWatermarkerController {
     @GetMapping("/get-additional-data")
     public Map<String, Set<String>> getAdditionalData(@RequestParam("username") String username) {
         return service.getAdditionalData(username);
+    }
+
+
+    @GetMapping("/get-preset-style-params")
+    public List<WatermarkParamsDTO> getPresetStyleParams() {
+        return service.getPresetStyleParams();
+    }
+
+    @GetMapping("/get-custom-style-params")
+    public List<WatermarkDataDTO> getCustomStyleParams(@RequestParam("username") String username) {
+        return service.getCustomStyleParams(username);
     }
 }

@@ -1,8 +1,18 @@
 package com.example.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.example.converter.WatermarkParamsConverter;
+import com.example.dto.WatermarkDataDTO;
+import com.example.dto.WatermarkParamsDTO;
+import com.example.entity.order.WatermarkData;
+import com.example.entity.order.WatermarkParams;
+import com.example.exception.FontNotFoundException;
+import com.example.mapper.WatermarkMapper;
 import com.example.service.api.BatchImageWatermarkerService;
 import com.example.util.FileUtil;
 import com.example.util.ImageUtil;
+import jakarta.annotation.Resource;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -26,6 +36,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerService {
+
+    @Resource
+    WatermarkMapper mapper;
 
     private static final Map<String, Thread> T = new ConcurrentHashMap<>();
     private static final Map<String, Integer> P = new ConcurrentHashMap<>();
@@ -83,6 +96,30 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
         INFO.remove(username);
     }
 
+    @Override
+    public List<WatermarkParamsDTO> getPresetStyleParams() {
+        List<WatermarkParamsDTO> res = new ArrayList<>();
+        for (WatermarkParams w : ImageUtil.P) {
+            res.add(WatermarkParamsConverter.toDTO(w));
+        }
+        return res;
+    }
+
+    @Override
+    public List<WatermarkDataDTO> getCustomStyleParams(String username) {
+        List<WatermarkDataDTO> res = new ArrayList<>();
+        List<WatermarkData> tmp = mapper.selectByUsername(username);
+        for (WatermarkData d : tmp) {
+            WatermarkDataDTO resDTO = new WatermarkDataDTO();
+            resDTO.setId(d.getId());
+            resDTO.setBackgroundImage(d.getBackgroundImage());
+            resDTO.setModifiedImage(d.getModifiedImage());
+            resDTO.setParams(JSON.parseObject(d.getJson(), new TypeReference<WatermarkParamsDTO>() {}));
+            res.add(resDTO);
+        }
+        return res;
+    }
+
     public void handleFileUpload(String username, byte[] fileBytes, Integer mode) throws IOException, InterruptedException {
         File tempDir = Files.createTempDirectory("temp").toFile();
         try {
@@ -107,6 +144,12 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                         map.put(mid, price);
                     }
                     int validFilesCount = 0;
+                    try {
+                        String fontName = ImageUtil.P.get(mode - 1).getFontName();
+                        if (!ImageUtil.check(fontName)) throw new FontNotFoundException("字体 [" + fontName + "] 未安装在系统中");
+                    } catch (FontNotFoundException e) {
+                        System.err.println("异常信息: " + e.getMessage());
+                    }
                     for (File f: files) {
                         if (Thread.currentThread().isInterrupted()) {
                             throw new InterruptedException("用户已停止任务");
@@ -120,7 +163,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                         else {
                             ZipArchiveEntry entry = new ZipArchiveEntry(f.getName());
                             zipOut.putArchiveEntry(entry);
-                            ImageUtil.processImage(mode, f, price, zipOut);
+                            ImageUtil.handleImage(mode, f, price, zipOut);
                             zipOut.closeArchiveEntry();
                             tableNoMatch.remove(mid);
                             successMatch.add(mid);

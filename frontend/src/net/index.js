@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 
-const defaultError = () => ElMessage.error('发生了一些错误，请联系管理员')
+const defaultError = () => ElMessage.error('发生了一些错误，请联系作者：星开祈灵')
 const defaultFailure = (message) => ElMessage.warning(message)
 
 function _GET(url, success, failure = defaultFailure, error = defaultError) {
@@ -37,6 +37,7 @@ async function get(url) {
         return res.data
     } catch (e) {
         console.error('发送数据时出错：', e)
+        throw e;
     }
 }
 
@@ -51,6 +52,22 @@ async function post(url, data) {
         return res.data
     } catch (e) {
         console.error('发送数据时出错：', e)
+        throw e;
+    }
+}
+
+async function Post(url, data) {
+    try {
+        const res = await axios.post(url, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        })
+        return res.data
+    } catch (e) {
+        console.error('发送数据时出错：', e)
+        throw e;
     }
 }
 
@@ -66,6 +83,7 @@ async function GET(url, params) {
         return res.data
     } catch (e) {
         console.error('发送数据时出错：', e)
+        throw e;
     }
 }
 
@@ -80,7 +98,8 @@ async function POST(url, data) {
         return res.data
     } catch (e) {
         console.error('发送数据时出错：', e)
+        throw e;
     }
 }
 
-export { _GET, _POST, get, post, GET, POST }
+export { _GET, _POST, get, post, GET, POST, Post }

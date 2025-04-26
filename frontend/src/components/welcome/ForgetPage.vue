@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-loading="loading">
         <div style="margin: 30px 20px">
             <el-steps :active="active" finish-status="success" align-center>
                 <el-step title="验证电子邮件" />
@@ -86,7 +86,7 @@ import { _POST } from "@/net";
 import { ElMessage } from "element-plus";
 import router from "@/router";
 
-const active = ref(0)
+const active = ref(0), loading = ref(false)
 
 const form = reactive({
     email: '',
@@ -132,44 +132,47 @@ const onValidate = (prop, isValid) => {
 }
 
 const validateEmail = () => {
+    loading.value = true
     coldTime.value = 60
     _POST('/api/auth/valid-reset-email', {
         email: form.email
-    }, (message) => { // 成功回调函数，处理请求成功后的响应
-        ElMessage.success(message) // 显示成功消息
-        setInterval(() => coldTime.value--, 1000) // 每秒将 coldTime.value 减 1，创建一个计时器
-    }, (message) => { // 失败回调函数，处理请求失败后的响应
-        ElMessage.warning(message) // 显示警告消息
+    }, (message) => {
+        ElMessage.success(message)
+        setInterval(() => coldTime.value--, 1000)
+        loading.value = false
+    }, (message) => {
+        ElMessage.warning(message)
         coldTime.value = 0
+        loading.value = false
     })
 }
 
 const startReset = () => {
-    formRef.value.validate((isValid) => { // 进行表单验证
-        if(isValid) { // 如果表单验证通过
-            _POST('/api/auth/start-reset', { // 开始重置过程
+    formRef.value.validate((isValid) => {
+        if (isValid) {
+            _POST('/api/auth/start-reset', {
                 email: form.email,
                 code: form.code
-            }, () => { // 成功回调函数，处理请求成功后的响应
+            }, () => {
                 active.value++
             })
-        } else { // 如果表单验证未通过
-            ElMessage.warning('请填写电子邮件地址和验证码') // 显示警告消息，提示用户填写电子邮件地址和验证码
+        } else {
+            ElMessage.warning('请填写电子邮件地址和验证码')
         }
     })
 }
 
 const doReset = () => {
-    formRef.value.validate((isValid) => { // 进行表单验证
-        if(isValid) { // 如果表单验证通过
-            _POST('/api/auth/do-reset', { // 执行密码重置
+    formRef.value.validate((isValid) => {
+        if (isValid) {
+            _POST('/api/auth/do-reset', {
                 password: form.password
-            }, (message) => { // 成功回调函数，处理请求成功后的响应
-                ElMessage.success(message) // 显示成功消息
-                router.push('/') // 跳转到首页
+            }, (message) => {
+                ElMessage.success(message)
+                router.push('/')
             })
-        } else { // 如果表单验证未通过
-            ElMessage.warning('请填写新的密码') // 显示警告消息，提示用户填写新的密码
+        } else {
+            ElMessage.warning('请填写新的密码')
         }
     })
 }

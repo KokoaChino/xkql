@@ -5,7 +5,13 @@
     <div class="main-container">
         <div class="container">
             <div class="photo-card" v-for="(url, index) in urls" :key="index">
-                <img :src="url" :alt="url" @click="move(url)">
+                <img
+                    v-lazy="url"
+                    :alt="url"
+                    @click="move(url)"
+                    class="lazy-image"
+                    :data-placeholder="placeholder"
+                >
                 <div class="photo-info">
                     <div class="photo-title">{{ list[index][0] }}</div>
                     <div class="photo-time">{{ list[index][1] }}</div>
@@ -43,13 +49,13 @@
 import { post } from "@/net/index.js";
 import { ref, onMounted } from 'vue';
 
-
+const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
 const characterName = ref()
 const list = ref([])
 const urls = ref([])
 
 const move = (url) => {
-    const newUrl = 'http://localhost:5173' + url
+    const newUrl = 'http://localhost:5174' + url
     window.open(newUrl, '');
 }
 
@@ -88,7 +94,6 @@ body {
 }
 
 .card-title {
-    width: 100%;
     height: 100px;
     border: solid 1px #202222;
     background-size: 20px 20px;
@@ -168,5 +173,32 @@ body {
 .button:active {
     transform: scale(0.98);
     box-shadow: 0 0.5em 1.5em -0.5em hsla(249, 62%, 51%, 0.745);
+}
+
+.lazy-image {
+    background: #f0f0f0;
+    transition: opacity 0.3s;
+}
+.lazy-image.loaded {
+    opacity: 1;
+}
+.lazy-image:not(.loaded) {
+    opacity: 0;
+}
+.lazy-image.error {
+    background: #ffe6e6;
+    position: relative;
+}
+.lazy-image.error::after {
+    content: "⚠ 图片加载失败";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff4444;
+    font-size: 12px;
+    text-align: center;
+    padding: 4px;
 }
 </style>

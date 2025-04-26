@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WatermarkDataDTO {
     Integer id;
-    byte[] backgroundImage;
-    byte[] modifiedImage;
+    String username;
+    String backgroundImage;
+    String previewImage;
     WatermarkParamsDTO params;
 }

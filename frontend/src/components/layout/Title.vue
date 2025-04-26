@@ -26,7 +26,6 @@ defineOptions({
 }
 
 .card-title {
-    width: 100%;
     height: 100px;
     border: solid 1px #202222;
     background-size: 20px 20px;

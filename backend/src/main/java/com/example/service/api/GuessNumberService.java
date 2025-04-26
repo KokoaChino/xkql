@@ -1,6 +1,6 @@
 package com.example.service.api;
 
-import com.example.entity.order.GuessNumber;
+import com.example.entity.other.GuessNumber;
 import java.util.List;
 
 

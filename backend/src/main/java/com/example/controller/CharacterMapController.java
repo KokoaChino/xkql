@@ -31,6 +31,7 @@ public class CharacterMapController {
 
     @PostMapping("/get-character-map-files")
     public List<List<String>> getCharacterMapFiles(@RequestBody String name) {
+        name = name.replace("\"", "");
         return service.getCharacterMapFiles(name);
     }
 }

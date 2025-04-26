@@ -1,12 +1,10 @@
 package com.example.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.example.converter.WatermarkParamsConverter;
+import com.example.convert.WatermarkParamsConvert;
 import com.example.dto.WatermarkDataDTO;
 import com.example.dto.WatermarkParamsDTO;
-import com.example.entity.order.WatermarkData;
-import com.example.entity.order.WatermarkParams;
+import com.example.entity.other.WatermarkData;
+import com.example.entity.other.WatermarkParams;
 import com.example.exception.FontNotFoundException;
 import com.example.mapper.WatermarkMapper;
 import com.example.service.api.BatchImageWatermarkerService;
@@ -24,12 +22,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -47,16 +45,15 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
 
     @Override
-    public void startTask(String username, byte[] fileBytes, Integer mode) {
+    public void startTask(String username, byte[] fileBytes, WatermarkParams params) {
         Thread thread = new Thread(() -> {
             try {
-                handleFileUpload(username, fileBytes, mode);
-            } catch (InterruptedException e) {
+                handleFileUpload(username, fileBytes, params);
+            } catch (InterruptedException | IOException | FontNotFoundException e) {
                 P.remove(username);
                 T.remove(username);
                 ZIP.remove(username);
                 INFO.remove(username);
-            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -100,7 +97,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
     public List<WatermarkParamsDTO> getPresetStyleParams() {
         List<WatermarkParamsDTO> res = new ArrayList<>();
         for (WatermarkParams w : ImageUtil.P) {
-            res.add(WatermarkParamsConverter.toDTO(w));
+            res.add(WatermarkParamsConvert.toDTO(w));
         }
         return res;
     }
@@ -109,18 +106,75 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
     public List<WatermarkDataDTO> getCustomStyleParams(String username) {
         List<WatermarkDataDTO> res = new ArrayList<>();
         List<WatermarkData> tmp = mapper.selectByUsername(username);
-        for (WatermarkData d : tmp) {
-            WatermarkDataDTO resDTO = new WatermarkDataDTO();
-            resDTO.setId(d.getId());
-            resDTO.setBackgroundImage(d.getBackgroundImage());
-            resDTO.setModifiedImage(d.getModifiedImage());
-            resDTO.setParams(JSON.parseObject(d.getJson(), new TypeReference<WatermarkParamsDTO>() {}));
-            res.add(resDTO);
+        for (WatermarkData w : tmp) {
+            res.add(WatermarkParamsConvert.toDTO(w));
         }
+        res.sort(Comparator.comparing(WatermarkDataDTO::getId));
         return res;
     }
 
-    public void handleFileUpload(String username, byte[] fileBytes, Integer mode) throws IOException, InterruptedException {
+    @Override
+    public void addCustomStyleParams(WatermarkDataDTO data) {
+        mapper.insert(WatermarkParamsConvert.toEntity(data));
+    }
+
+    @Override
+    public void deleteCustomStyleParams(Integer id) {
+        mapper.deleteById(id);
+    }
+
+    @Override
+    public void updateCustomStyleParams(WatermarkDataDTO data) {
+        mapper.update(WatermarkParamsConvert.toEntity(data));
+    }
+
+    @Override
+    public String getDefaultBackgroundImage() {
+        File imageFile = new File("backend/static/图片/默认背景图.jpg");
+        try (InputStream inputStream = new FileInputStream(imageFile)) {
+            byte[] bytes = inputStream.readAllBytes();
+            return WatermarkParamsConvert.toBase64(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String getModifiedImage(WatermarkParams params, byte[] bytes) throws FontNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
+            BufferedImage image = ImageIO.read(bis);
+            if (image == null) {
+                throw new IllegalArgumentException("无法解析图像数据（格式不支持或数据损坏）");
+            }
+            BufferedImage bufferedImage = ImageUtil.handleWatermark(params, image, "1234");
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                ImageIO.write(bufferedImage, "jpeg", baos);
+                baos.flush();
+                return WatermarkParamsConvert.toBase64(baos.toByteArray());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("读取图像数据时发生错误", e);
+        }
+    }
+
+    @Override
+    public String handleUploadFontFile(byte[] fileBytes, String fileName) {
+        if (!fileName.contains(".")) throw new IllegalArgumentException("文件名格式错误");
+        String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (!ImageUtil.FONT_TYPE.contains(type.toLowerCase())) throw new IllegalArgumentException("不支持写入." + type + "格式的字体文件");
+        String name = "[" + fileName.substring(0, fileName.lastIndexOf(".")) + "]-" + UUID.randomUUID().toString().substring(0, 8);
+        fileName = name + "." + type;
+        File file = new File(ImageUtil.UPLOAD_FONT_PATH, fileName);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(fileBytes);
+        } catch (IOException e) {
+            throw new RuntimeException("写入文件失败: " + fileName, e);
+        }
+        ImageUtil.UPLOAD_FONT_MAP.put(name, type);
+        return fileName;
+    }
+
+    public void handleFileUpload(String username, byte[] fileBytes, WatermarkParams params) throws IOException, InterruptedException, FontNotFoundException {
         File tempDir = Files.createTempDirectory("temp").toFile();
         try {
             FileUtil.unzip(fileBytes, tempDir);
@@ -145,8 +199,8 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                     }
                     int validFilesCount = 0;
                     try {
-                        String fontName = ImageUtil.P.get(mode - 1).getFontName();
-                        if (!ImageUtil.check(fontName)) throw new FontNotFoundException("字体 [" + fontName + "] 未安装在系统中");
+                        String fontName = params.getFontName();
+                        if (ImageUtil.getFont(fontName, 0, 0) == null) throw new FontNotFoundException("字体 [" + fontName + "] 未安装在系统中");
                     } catch (FontNotFoundException e) {
                         System.err.println("异常信息: " + e.getMessage());
                     }
@@ -163,7 +217,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                         else {
                             ZipArchiveEntry entry = new ZipArchiveEntry(f.getName());
                             zipOut.putArchiveEntry(entry);
-                            ImageUtil.handleImage(mode, f, price, zipOut);
+                            ImageUtil.handleImage(params, f, price, zipOut);
                             zipOut.closeArchiveEntry();
                             tableNoMatch.remove(mid);
                             successMatch.add(mid);

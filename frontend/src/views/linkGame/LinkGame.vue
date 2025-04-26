@@ -13,14 +13,21 @@
 import Title from '@/components/layout/Title.vue';
 import { provide } from "vue";
 import router from "@/router/index.js";
+import { useStore } from "@/stores/index.js";
+import {ElMessage} from "element-plus";
 
 provide("title", "连连看游戏");
+const store = useStore(), administrators = new Set(["星开祈灵"])
 
 const game_start = async () => {
     await router.push('/link-game/game-start')
 }
 
 const set_game = async () => {
+    if (!administrators.has(store.auth.user.username)) {
+        ElMessage.error("该功能仅对管理员开放！")
+        return;
+    }
     await router.push('/link-game/set-game')
 }
 

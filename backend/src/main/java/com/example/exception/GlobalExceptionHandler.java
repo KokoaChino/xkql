@@ -19,4 +19,13 @@ public class GlobalExceptionHandler {
         errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+
+    @ExceptionHandler(FontNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(FontNotFoundException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("type", "FontNotFoundException");
+        errorResponse.put("message", e.getMessage());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 }

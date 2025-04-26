@@ -1,5 +1,5 @@
 <template>
-    <div style="text-align: center;margin: 0 20px">
+    <div style="text-align: center;margin: 0 20px" v-loading="loading">
         <div style="margin-top: 100px">
             <div style="font-size: 25px;font-weight: bold">注册新用户</div>
             <div style="font-size: 14px;color: grey">欢迎注册星开祈灵百宝箱，请在下方填写相关信息</div>
@@ -72,6 +72,8 @@ import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import { _POST } from "@/net";
 
+const loading = ref(false)
+
 const form = reactive({
     username: '',
     password: '',
@@ -131,33 +133,36 @@ const onValidate = (prop, isValid) => {
 }
 
 const register = () => {
-    formRef.value.validate((isValid) => { // 调用 formRef 的 validate 方法验证表单，验证结果通过回调函数返回
-        if(isValid) { // 如果表单验证通过
-            _POST('/api/auth/register', { // 请求体包含注册所需的数据
+    formRef.value.validate((isValid) => {
+        if (isValid) {
+            _POST('/api/auth/register', {
                 username: form.username,
                 password: form.password,
                 email: form.email,
                 code: form.code
-            }, (message) => { // 请求成功后调用回调函数，接收返回的消息
+            }, (message) => {
                 ElMessage.success(message)
-                router.push("/") // 导航到根页面 "/"
+                router.push("/")
             })
-        } else { // 如果表单验证未通过
+        } else {
             ElMessage.warning('请完整填写注册表单内容！')
         }
     })
 }
 
 const validateEmail = () => {
-    coldTime.value = 60 // 表示倒计时时间
-    _POST('/api/auth/valid-register-email', { // 请求体包含验证邮箱所需的数据
+    coldTime.value = 60
+    loading.value = true
+    _POST('/api/auth/valid-register-email', {
         email: form.email
-    }, (message) => { // 请求成功后调用回调函数，接收返回的消息
+    }, (message) => {
         ElMessage.success(message)
-        setInterval(() => coldTime.value--, 1000) // 启动一个定时器，每秒减少 coldTime 的值
-    }, (message) => { // 请求失败后调用回调函数，接收返回的消息
+        setInterval(() => coldTime.value--, 1000)
+        loading.value = false
+    }, (message) => {
         ElMessage.warning(message)
-        coldTime.value = 0 // 停止倒计时
+        coldTime.value = 0
+        loading.value = false
     })
 }
 </script>

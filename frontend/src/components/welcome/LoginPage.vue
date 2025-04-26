@@ -62,12 +62,12 @@ const login = () => {
             username: form.username,
             password: form.password,
             remember: form.remember
-        }, (message) => { // 请求成功后调用回调函数，接收返回的消息
+        }, (message) => {
             ElMessage.success(message)
-            _GET('/api/user/me', (message) => { // 请求成功后调用回调函数，接收用户信息
+            _GET('/api/user/me', (message) => {
                 store.auth.user = message
-                router.push('/index') // 导航到 '/index' 页面
-            }, () => { // 如果GET请求失败，调用回调函数
+                router.push('/index')
+            }, () => {
                 store.auth.user = null
             })
         })

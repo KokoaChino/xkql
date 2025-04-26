@@ -1,7 +1,7 @@
 package com.example.dto;
 
-import com.example.converter.WatermarkParamsConverter;
-import com.example.entity.order.WatermarkParams;
+import com.example.convert.WatermarkParamsConvert;
+import com.example.entity.other.WatermarkParams;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,16 +29,22 @@ public class WatermarkParamsDTO {
     @NotNull private final String fontColor;
 
     // 描边
-    @Builder.Default private final Integer strokeSize = null;
-    @Builder.Default private final String strokeColor = WatermarkParamsConverter.getColor(Color.WHITE);
+    @Builder.Default private final Integer strokeSize = 0;
+    @Builder.Default private final String strokeColor = WatermarkParamsConvert.getColor(Color.WHITE);
+
+    // 投影
+    @Builder.Default private final Integer shadowDx = 0;
+    @Builder.Default private final Integer shadowDy = 0;
+    @Builder.Default private final String shadowColor = WatermarkParamsConvert.getColor(Color.BLACK);
+    @Builder.Default private final Float shadowOpacity = 0f;
 
     // 渐变
     @NotNull private final gradientDTO fontGradient;
     @NotNull private final gradientDTO strokeGradient;
 
     // 仿射变换
-    @Builder.Default private final Float rotation = Float.NaN;
-    @Builder.Default private final Float shearX = Float.NaN;
+    @Builder.Default private final Integer rotation = 0;
+    @Builder.Default private final Float shearX = 0f;
     @Builder.Default private final Boolean priorityRotation = true;
 
     @With
@@ -47,9 +53,9 @@ public class WatermarkParamsDTO {
     public static final class gradientDTO {
         @Builder.Default Boolean enableGradient = false;
         @Builder.Default private final Point start = new Point(0, 0);
-        @Builder.Default private final String startColor = WatermarkParamsConverter.getColor(Color.BLUE);
+        @Builder.Default private final String startColor = WatermarkParamsConvert.getColor(Color.BLUE);
         @Builder.Default private final Point end = new Point(WatermarkParams.N, WatermarkParams.N);
-        @Builder.Default private final String endColor = WatermarkParamsConverter.getColor(Color.RED);
+        @Builder.Default private final String endColor = WatermarkParamsConvert.getColor(Color.RED);
         @Builder.Default private final Boolean cyclic = true;
     }
 }

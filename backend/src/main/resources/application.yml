@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,10 +19,10 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
   data:
     redis:
-      database: 0
+      database: 1
       host: localhost
       port: 6379
   servlet:
     multipart:
-      max-file-size: 1000MB # 允许单个文件的最大大小
-      max-request-size: 1024MB # 允许整个请求的最大大小
+      max-file-size: 500MB
+      max-request-size: 512MB

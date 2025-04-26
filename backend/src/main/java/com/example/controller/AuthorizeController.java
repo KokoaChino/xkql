@@ -48,7 +48,7 @@ public class AuthorizeController {
                                          @Length(min = 6, max = 6) @RequestParam("code") String code,
                                          HttpSession session) {
         String s = service.validateAndRegister(username, password, email, code, session.getId());
-        if(s == null) return RestBean.success("注册成功");
+        if (s == null) return RestBean.success("注册成功");
         else return RestBean.failure(400, s);
     }
 
@@ -57,7 +57,7 @@ public class AuthorizeController {
                                        @Length(min = 6, max = 6) @RequestParam("code") String code,
                                        HttpSession session) {
         String s = service.validateOnly(email, code, session.getId());
-        if(s == null) {
+        if (s == null) {
             session.setAttribute("reset-password", email);
             return RestBean.success();
         } else {
@@ -69,9 +69,9 @@ public class AuthorizeController {
     public RestBean<String> resetPassword(@Length(min = 6, max = 16) @RequestParam("password") String password,
                                           HttpSession session) {
         String email = (String) session.getAttribute("reset-password");
-        if(email == null) {
+        if (email == null) {
             return RestBean.failure(401, "请先完成邮箱验证");
-        } else if(service.resetPassword(password, email)) {
+        } else if (service.resetPassword(password, email)) {
             session.removeAttribute("reset-password");
             return RestBean.success("密码重置成功");
         } else {

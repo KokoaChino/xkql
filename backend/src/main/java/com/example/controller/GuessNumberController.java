@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.entity.order.GuessNumber;
+import com.example.entity.other.GuessNumber;
 import com.example.service.api.GuessNumberService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;

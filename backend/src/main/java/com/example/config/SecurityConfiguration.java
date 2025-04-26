@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                 .rememberMe(e -> e
                         .rememberMeParameter("remember")
                         .tokenRepository(repository)
-                        .tokenValiditySeconds(3600 * 24 * 7)
+                        .tokenValiditySeconds(3600 * 24 * 15)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(e -> e.configurationSource(this.corsConfigurationSource()))

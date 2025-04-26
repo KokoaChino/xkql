@@ -12,7 +12,7 @@
             <el-input-number
                 v-model="maxDeep"
                 :min="1"
-                :max="100"
+                :max="10"
                 placeholder="递归深度"
                 class="selector"
             />
@@ -71,7 +71,7 @@ provide("title", "简单爬虫脚本");
 
 const store = useStore();
 const url = ref('');
-const maxDeep = ref(1);
+const maxDeep = ref(null);
 const parseType = ref('all');
 const isRunning = ref(false);
 const results = ref([]);

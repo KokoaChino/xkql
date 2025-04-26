@@ -30,7 +30,6 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-
         <!-- Lombok 简化代码 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -130,7 +129,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

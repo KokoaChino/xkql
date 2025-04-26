@@ -4,7 +4,7 @@
         <button class="button button-1" @click="game_start">开始游戏</button>
         <label>
             设置游戏最大值：
-            <select v-model="max" style="width: 90px">
+            <select v-model="max" style="width: 90px;height: 30px;">
                 <option selected>10</option>
                 <option>100</option>
                 <option>1000</option>

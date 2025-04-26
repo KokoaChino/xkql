@@ -7,7 +7,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'welcome',
-            component: () => import('@/views/common/WelcomeView.vue'),
+            component: () => import('@/views/common/Welcome.vue'),
             children: [
                 {
                     path: '',
@@ -26,7 +26,7 @@ const router = createRouter({
         }, {
             path: '/index',
             name: 'index',
-            component: () => import('@/views/common/IndexView.vue'),
+            component: () => import('@/views/common/Index.vue'),
             meta: {
                 title: '主页',
                 icon: '/favicon.png'
@@ -50,11 +50,11 @@ const router = createRouter({
         }, {
             path: '/guess-number/playing',
             name: 'guess-number-playing',
-            component: () => import('@/views/guessNumber/GuessNumberPlaying.vue')
+            component: () => import('@/views/guessNumber/Playing.vue')
         }, {
             path: '/guess-number/historical-record',
             name: 'guess-number-historical-record',
-            component: () => import('@/views/guessNumber/GuessNumberHistoricalRecord.vue')
+            component: () => import('@/views/guessNumber/HistoricalRecord.vue')
         }, {
             path: '/character-map',
             name: 'character-map',
@@ -78,15 +78,15 @@ const router = createRouter({
         }, {
             path: '/link-game/set-game',
             name: 'link-game/set-game',
-            component: () => import('@/views/linkGame/LinkGameLibrary.vue')
+            component: () => import('@/views/linkGame/Library.vue')
         }, {
             path: '/link-game/game-start',
             name: 'link-game/game-start',
-            component: () => import('@/views/linkGame/LinkGamePlaying.vue')
+            component: () => import('@/views/linkGame/Playing.vue')
         }, {
             path: '/link-game/historical-record',
             name: 'link-game/historical-record',
-            component: () => import('@/views/linkGame/LinkGameHistoricalRecord.vue')
+            component: () => import('@/views/linkGame/HistoricalRecord.vue')
         }, {
             path: '/crawler',
             name: 'crawler',
@@ -98,7 +98,7 @@ const router = createRouter({
         }, {
             path: '/batch-image-watermarker',
             name: 'batch-image-watermarker',
-            component: () => import('@/views/BatchImageWatermarker/BatchImageWatermarker.vue'),
+            component: () => import('@/views/batchImageWatermarker/BatchImageWatermarker.vue'),
             meta: {
                 title: '批量图片水印处理',
                 icon: '/icon/BatchImageWatermarker.png'

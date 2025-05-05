@@ -1,59 +1,61 @@
 <template>
-    <Title/>
-    <div class="container">
-        <el-input
-            v-loading="isRunning"
-            v-model="url"
-            placeholder="请输入目标网址"
-            class="input-field"
-            clearable
-        />
-        <div class="selector-group">
-            <el-input-number
-                v-model="maxDeep"
-                :min="1"
-                :max="10"
-                placeholder="递归深度"
-                class="selector"
+    <div class="main-container">
+        <Title/>
+        <div class="container">
+            <el-input
+                v-loading="isRunning"
+                v-model="url"
+                placeholder="请输入目标网址"
+                class="input-field"
+                clearable
             />
-            <el-select
-                v-model="parseType"
-                placeholder="选择解析类型"
-                class="selector"
-            >
-                <el-option label="解析全部链接" value="all" />
-                <el-option label="解析下载链接" value="download" />
-            </el-select>
-        </div>
-        <div class="button-container">
-            <div class="button-group">
-                <el-button
-                    @click="startParse"
-                    :disabled="isRunning"
-                    type="primary"
-                    class="action-btn"
+            <div class="selector-group">
+                <el-input-number
+                    v-model="maxDeep"
+                    :min="1"
+                    :max="10"
+                    placeholder="递归深度"
+                    class="selector"
+                />
+                <el-select
+                    v-model="parseType"
+                    placeholder="选择解析类型"
+                    class="selector"
                 >
-                    开始解析
-                </el-button>
-                <el-button
-                    @click="stopParse"
-                    :disabled="!isRunning"
-                    type="danger"
-                    class="action-btn"
-                >
-                    停止解析
-                </el-button>
+                    <el-option label="解析全部链接" value="all" />
+                    <el-option label="解析下载链接" value="download" />
+                </el-select>
             </div>
-            <div class="status-message">
-                已解析：{{ results.length }} 个链接
+            <div class="button-container">
+                <div class="button-group">
+                    <el-button
+                        @click="startParse"
+                        :disabled="isRunning"
+                        type="primary"
+                        class="action-btn"
+                    >
+                        开始解析
+                    </el-button>
+                    <el-button
+                        @click="stopParse"
+                        :disabled="!isRunning"
+                        type="danger"
+                        class="action-btn"
+                    >
+                        停止解析
+                    </el-button>
+                </div>
+                <div class="status-message">
+                    已解析：{{ results.length }} 个链接
+                </div>
             </div>
-        </div>
-        <div class="result-container">
-            <ul class="result-list">
-                <li v-for="link in results" :key="link" class="result-item">
-                    <a :href="link" target="_blank" class="result-link">{{ link }}</a>
-                </li>
-            </ul>
+            <div class="result-container">
+                <ul class="result-list">
+                    <li v-for="link in results" :key="link" class="result-item">
+                        <a :href="link" target="_blank" class="result-link">{{ link }}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -121,6 +123,12 @@ onBeforeRouteLeave((to, from, next) => {
 
 
 <style scoped>
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
 .container {
     max-width: 1000px;
     margin: 2rem auto;

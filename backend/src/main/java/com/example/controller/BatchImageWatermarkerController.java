@@ -14,6 +14,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +35,13 @@ public class BatchImageWatermarkerController {
     @PostMapping("/start-task")
     public void startTask(@RequestParam("username") String username,
                           @RequestParam("file") MultipartFile file,
-                          @RequestParam("params") String json) throws IOException {
+                          @RequestParam("params") String json,
+                          @RequestParam("backgroundImage") String base64) throws IOException {
         WatermarkParamsDTO params = JSON.parseObject(json, new TypeReference<WatermarkParamsDTO>() {});
-        service.startTask(username, file.getBytes(), WatermarkParamsConvert.toEntity(params));
+        Image backgroundImage;
+        if (base64 == null || base64.equals("null")) backgroundImage = null;
+        else backgroundImage = ImageIO.read(new ByteArrayInputStream(WatermarkParamsConvert.toBytes(base64)));
+        service.startTask(username, file.getInputStream(), WatermarkParamsConvert.toEntity(params), backgroundImage);
     }
 
     @GetMapping("/get-progress")
@@ -93,6 +100,7 @@ public class BatchImageWatermarkerController {
     public String getModifiedImage(@RequestBody ImageRequestDTO request) throws FontNotFoundException {
         WatermarkParamsDTO params = request.getParams();
         String base64 = request.getBase64();
+        if (base64 == null) return "null";
         return service.getModifiedImage(
                 WatermarkParamsConvert.toEntity(params),
                 WatermarkParamsConvert.toBytes(base64)

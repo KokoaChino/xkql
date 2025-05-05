@@ -1,11 +1,13 @@
 # 项目文档
 
-![星开祈灵百宝箱 项目文档-1.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-1.png)
+![星开祈灵百宝箱 项目文档-1.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-1.png)
 
 
 
 ## 📖 项目简介
 
+> 《星开祈灵百宝箱》
+>
 > 一个整合多个小工具或小游戏的开源项目集合
 >
 > 包含批量图片水印处理、简单爬虫脚本、连连看游戏等模块，采用 SpringBoot + Vue3 技术栈实现
@@ -81,7 +83,7 @@
    npm run dev
    ```
 
-6. 访问 `http://localhost:5174` 即可
+   访问 `http://localhost:5174` 即可
 
 
 
@@ -97,7 +99,7 @@
 
 点击前往**注册账号**
 
-![星开祈灵百宝箱 项目文档-2.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-2.png)
+![星开祈灵百宝箱 项目文档-2.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-2.png)
 
 **填写用户名，密码等相关信息**后，再点击**获取验证码**
 
@@ -105,7 +107,7 @@
 
 验证码三分钟之内有效，一分钟内不得重复获取验证码
 
-![星开祈灵百宝箱 项目文档-3.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-3.png)
+![星开祈灵百宝箱 项目文档-3.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-3.png)
 
 #### 2. 登录界面
 
@@ -113,47 +115,47 @@
 
 可以勾选**记住我**功能（用户在登录后的一段时间内，只要不退出登录，则不需要验证，就可以直接登录）
 
-![星开祈灵百宝箱 项目文档-4.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-4.png)
+![星开祈灵百宝箱 项目文档-4.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-4.png)
 
 #### 3. 忘记密码
 
 点击前往**忘记密码**模块
 
-![星开祈灵百宝箱 项目文档-5.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-5.png)
+![星开祈灵百宝箱 项目文档-5.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-5.png)
 
 首先需要**进行电子邮件的验证**，依然是通过验证码的形式
 
-![星开祈灵百宝箱 项目文档-6.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-6.png)
+![星开祈灵百宝箱 项目文档-6.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-6.png)
 
 之后**填写新密码**即可
 
-![星开祈灵百宝箱 项目文档-7.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-7.png)
+![星开祈灵百宝箱 项目文档-7.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-7.png)
 
 #### 4. 退出登录
 
 主页，点击右上角的绿色按钮
 
-![星开祈灵百宝箱 项目文档-8.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-8.png)
+![星开祈灵百宝箱 项目文档-8.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-8.png)
 
 #### 5. 注销账号
 
 主页，点击左上角的红色按钮
 
-![星开祈灵百宝箱 项目文档-9.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-9.png)
+![星开祈灵百宝箱 项目文档-9.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-9.png)
 
 会出来一个确认窗口，点击确认即可
 
-![星开祈灵百宝箱 项目文档-10.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-10.png)
+![星开祈灵百宝箱 项目文档-10.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-10.png)
 
 ### ➤ 各模块特殊说明
 
 #### 1. 猜数字游戏
 
-![星开祈灵百宝箱 项目文档-11.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-11.png)
+![星开祈灵百宝箱 项目文档-11.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-11.png)
 
 太简单了没啥好说的
 
-![星开祈灵百宝箱 项目文档-12.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-12.png)
+![星开祈灵百宝箱 项目文档-12.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-12.png)
 
 这里记录着你的最佳成绩
 
@@ -165,7 +167,7 @@
 
 当鼠标悬停在角色图片区域时，将触发交互式信息面板显示：
 
-![星开祈灵百宝箱 项目文档-13.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-13.png)
+![星开祈灵百宝箱 项目文档-13.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-13.png)
 
 *界面要素说明：*
 
@@ -178,7 +180,7 @@
 
 点击【查看图片】按钮后，系统将跳转至专用展示页面：
 
-![星开祈灵百宝箱 项目文档-14.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-14.png)
+![星开祈灵百宝箱 项目文档-14.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-14.png)
 
 *页面特性：*
 
@@ -189,7 +191,7 @@
 
 在悬停面板直接点击【下载图片】按钮：
 
-![星开祈灵百宝箱 项目文档-15.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-15.png)
+![星开祈灵百宝箱 项目文档-15.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-15.png)
 
 *系统响应：*
 
@@ -200,7 +202,7 @@
 
 成功下载的压缩包解压后效果：
 
-![星开祈灵百宝箱 项目文档-16.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-16.png)
+![星开祈灵百宝箱 项目文档-16.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-16.png)
 
 
 #### 3. 连连看游戏
@@ -210,7 +212,7 @@
 
 （注：当前版本暂未开放9×9至13×13尺寸方阵，问就是设计游戏图太烧脑了）
 
-![星开祈灵百宝箱 项目文档-17.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-17.png)
+![星开祈灵百宝箱 项目文档-17.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-17.png)
 
 ##### 核心规则
 1. **矩阵结构**：采用n×n的矩阵布局，包含若干对同色图块
@@ -230,7 +232,7 @@
    - 双击已连接图块 → 删除其关联路径
    - （编辑模式专有）双击未连接图块 → 删除该图块
 
-![星开祈灵百宝箱 项目文档-18.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-18.png)
+![星开祈灵百宝箱 项目文档-18.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-18.png)
 
 ##### 游戏库管理（管理员权限）
 - **功能入口**：第0页为专用编辑工作区
@@ -244,7 +246,7 @@
 
 #### 4. 简单爬虫脚本
 
-![星开祈灵百宝箱 项目文档-19.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-19.png)
+![星开祈灵百宝箱 项目文档-19.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-19.png)
 
 ##### 实现原理
 基于HTTP协议模拟浏览器请求，通过深度优先搜索算法遍历目标网站的所有可访问链接
@@ -258,7 +260,7 @@
 - **资源链接过滤**
   启用"解析下载链接"选项后，只解析那些疑似可以下载的资源链接
 
-![星开祈灵百宝箱 项目文档-20.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-20.png)
+![星开祈灵百宝箱 项目文档-20.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-20.png)
 
 ##### 操作流程
 1. **启动爬取** 
@@ -275,7 +277,7 @@
 #### 5. 批量图片水印处理
 
 ##### 主操作界面
-![星开祈灵百宝箱 项目文档-21.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-21.png)
+![星开祈灵百宝箱 项目文档-21.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-21.png)
 
 界面布局包含以下功能区域（自上而下、从左至右排列）：
 1. **压缩文件上传区** - 支持ZIP格式文件点击上传
@@ -287,9 +289,9 @@
 7. **实时预览窗口** - 可视化展示当前水印效果
 
 ##### 文件规范要求
-![星开祈灵百宝箱 项目文档-22.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-22.png)
+![星开祈灵百宝箱 项目文档-22.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-22.png)
 
-![星开祈灵百宝箱 项目文档-23.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-23.png)
+![星开祈灵百宝箱 项目文档-23.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-23.png)
 
 压缩包文件需满足以下技术规范：
 1. 文件格式限定为ZIP标准压缩格式
@@ -298,12 +300,59 @@
      * JPEG格式图片（.jpg/.jpeg）
      * Excel数据表（.xlsx）
    - 禁止包含其他类型文件或嵌套压缩包
-3. 数据表配置标准：
-   - A列：图片ID（从A2单元格开始）
-   - B列：对应水印文本（从B2单元格开始）
-   - 系统自动识别首个工作表的A2:Bn有效数据范围
-4. 命名对应规则：
-   - 图片文件名（不含扩展名）须与表格A列ID完全匹配
+
+3. 图片处理规则配置说明
+
+   您的图片将根据以下表格规则自动处理（配置区域位于Excel的第一个工作表的A列开始，跳过首行）
+
+   **各列配置说明**：
+
+   * A列（必填）图片唯一ID → 需与图片文件名图片文件名完全匹配
+   * B列（选填）水印文字 → 留空则等于啥也没做
+   * C列（选填）自定义文件名 → 留空时将自动使用A列的图片ID
+   * D-$\infty$列（选填）分级目录 → 从D列开始向右连续填写目录层级
+
+   **路径生成规则**：
+
+   1. 目录结构：系统将自动串联D列及右侧连续的非空单元格作为路径 （示例：D2=2023，E2=Q3 → 生成路径 /2023/Q3/）
+   2. 最终路径 = 目录路径 + "/" + [C列内容或A列ID] + 扩展名 （示例：当C2=宣传图 → /2023/Q3/宣传图.jpg）
+
+   **错误处理机制**：
+
+   ❗ 当检测到以下情况时：
+
+   - 路径包含非法字符（如 \ : * ? " < > |）
+   - 超过系统路径长度限制
+   - 其他非法路径格式 
+
+   📁 系统会自动保存到专用错误目录： ERROR-XXXXXXXX（示例：ERROR-4ab20ee1）
+
+   示例输出结果：
+   
+   ```
+   modified
+   ├── ERROR-4ab20ee1
+   │   ├── eee.jpg
+   │   └── fff.jpg
+   ├── SPU-1111
+   │   ├── 一室一厅
+   │   │   └── 商品展示图
+   │   │       └── 701.jpg
+   │   ├── 三室一厅
+   │   │   └── 商品展示图
+   │   │       └── 701.jpg
+   │   └── 两室一厅
+   │       └── 商品展示图
+   │           └── 701.jpg
+   └── 一级目录
+       └── 二级目录
+           └── 三级目录
+               └── 四级目录
+                   └── 五级目录
+                       └── 六级目录
+                           └── 七级目录
+                               └── ddd.jpg
+   ```
 
 ##### 处理结果解析
 **匹配成功：** 数据表与图片文件存在对应关系
@@ -311,9 +360,9 @@
 **图匹配失败：** 图片文件存在但无对应数据表记录
 
 ##### 水印参数配置
-![星开祈灵百宝箱 项目文档-24.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-24.png)
+![星开祈灵百宝箱 项目文档-24.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-24.png)
 
-![星开祈灵百宝箱 项目文档-25.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-25.png)
+![星开祈灵百宝箱 项目文档-25.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-25.png)
 
 参数配置系统包含以下特性：
 1. **预设模板模式**：
@@ -321,7 +370,7 @@
    - 支持模板即时切换应用
 2. **自定义模式**：
    - 实时预览：参数调整后立即显示效果
-   - 背景替换：支持上传自定义预览底图
+   - 背景替换：支持上传自定义背景样式图
    - 临时保存：编辑期间参数自动缓存
    - 模板保存：点击【添加样式】永久存储配置
 3. **更新机制**：
@@ -332,11 +381,11 @@
 4. **自定义字体设置：**
    * 如果系统中不存在指定字体，可以使用用户上传的字体文件
 
-![星开祈灵百宝箱 项目文档-26.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-26.png)
+![星开祈灵百宝箱 项目文档-26.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-26.png)
 
-![星开祈灵百宝箱 项目文档-27.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-27.png)
+![星开祈灵百宝箱 项目文档-27.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-27.png)
 
-![星开祈灵百宝箱 项目文档-28.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-28.png)
+![星开祈灵百宝箱 项目文档-28.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-28.png)
 
 ##### 标准操作流程
 1. **文件准备阶段**
@@ -427,44 +476,53 @@ public class SecurityConfiguration {
 
 **亮点描述：**
 
-- **批量图片水印处理**：在 `BatchImageWatermarkerController` 的 `startTask` 方法中，通过独立线程异步处理批量图片（`Thread` 启动），避免阻塞主线程
+- **线程池替代原生线程**：在 `BatchImageWatermarkerServiceImpl` 中使用 `ThreadPoolExecutor` 管理任务线程，支持动态调整线程数（核心线程数 2，最大 6）和任务队列（容量 10），避免资源耗尽风险
 - **任务进度与结果管理**：通过 `ConcurrentHashMap` 缓存任务进度（`P`）、生成文件（`ZIP`）和附加信息（`INFO`），提供 `/get-progress` 和 `/get-zip-file` 接口实时查询
-- **优雅的任务终止**：`stopTask` 方法通过 `Thread.interrupt()` 中断线程，释放资源，避免内存泄漏
+- **Future 实现任务可控性**：通过 `Future<?>` 对象和 `ConcurrentHashMap` 缓存任务状态，`stopTask` 方法调用 `future.cancel(true)` 实现更精准的任务终止，且通过统一的 `cleanupResources` 清理资源，防止内存泄漏
+- **临时文件生命周期管理**：新增 `cleanupTempFiles` 定时任务（每小时执行），自动清理超过 1 小时的临时 ZIP 文件，避免磁盘空间浪费
 
 **代码片段：**
 
 ```java
+@Slf4j
 @Service
 public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerService {
-    private static final Map<String, Thread> T = new ConcurrentHashMap<>(); // 线程缓存
+
+    private static final Map<String, Future<?>> T = new ConcurrentHashMap<>(); // 线程缓存
     private static final Map<String, Integer> P = new ConcurrentHashMap<>(); // 进度缓存
-    private static final Map<String, byte[]> ZIP = new ConcurrentHashMap<>(); // 文件缓存
+    private static final Map<String, File> ZIP = new ConcurrentHashMap<>(); // 文件缓存
     private static final Map<String, Map<String, Set<String>>> INFO = new ConcurrentHashMap<>(); // 信息缓存
-    
-    @Override
-    public void startTask(String username, byte[] fileBytes, WatermarkParams params) {
-        Thread thread = new Thread(() -> {
-            try {
-                handleFileUpload(username, fileBytes, params); // 处理图片并生成水印
-            } catch (InterruptedException | IOException | FontNotFoundException e) {
-                throw new RuntimeException(e);
-            } finally {
-                P.remove(username);
-                T.remove(username);
-                ZIP.remove(username);
-                INFO.remove(username);
-            }
-        });
-        T.put(username, thread);
-        thread.start();
-    }
+
+    private final ExecutorService executor = new ThreadPoolExecutor( // 线程池
+            2,
+            6,
+            30, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(10),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+    );
 
     @Override
-    public void stopTask(String username) {
-        Thread thread = T.get(username);
-        if (thread != null) thread.interrupt(); // 安全终止线程
+    public void startTask(String username, InputStream fileStream, WatermarkParams params, Image backgroundImage) {
+        cleanupResources(username);
+        Future<?> future = executor.submit(() -> {
+            try {
+                handleFileUpload(username, fileStream, params, backgroundImage); // 处理图片并生成水印
+            } catch (Exception e) {
+                cleanupResources(username);
+                log.error("进程崩溃：{}", e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
+        T.put(username, future);
     }
-    
+
+    private void cleanupResources(String username) { // 清理任务资源
+        P.remove(username);
+        T.remove(username);
+        INFO.remove(username);
+        ZIP.remove(username);
+    }
+
     @Override
     public Integer getProgress(String username) { // 获取进度
         return P.getOrDefault(username, 0);
@@ -472,17 +530,54 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
     @Override
     public ResponseEntity<InputStreamResource> getZipFile(String username) { // 获取文件结果
-        byte[] zipData = ZIP.getOrDefault(username, null);
-        if (zipData == null) return null;
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=modified.zip")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(new ByteArrayInputStream(zipData)));
+        File file = ZIP.getOrDefault(username, null);
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=modified.zip")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(new FileInputStream(file)));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new InputStreamResource(new ByteArrayInputStream("{\"message\":\"服务器内部错误\"}".getBytes())));
+        }
     }
 
     @Override
     public Map<String, Set<String>> getAdditionalData(String username) { // 获取附加信息
         return INFO.getOrDefault(username, null);
+    }
+
+    @Override
+    public void stopTask(String username) { // 终止任务
+        Future<?> future = T.get(username);
+        if (future != null) future.cancel(true); // 安全终止线程
+        cleanupResources(username);
+    }
+
+    @Scheduled(fixedRate = 3600 * 1000)
+    public void cleanupTempFiles() { // 定时清理过期临时文件
+        String tmpDirPath = System.getProperty("java.io.tmpdir");
+        File tempDir = new File(tmpDirPath);
+        File[] files = tempDir.listFiles((dir, name) ->
+                name.toLowerCase().startsWith("output") && name.toLowerCase().endsWith(".zip")
+        );
+        if (files != null) {
+            long now = System.currentTimeMillis();
+            for (File file : files) {
+                try {
+                    if (now - file.lastModified() > 3600 * 1000) {
+                        boolean deleted = file.delete();
+                        if (deleted) {
+                            log.info("已清理过期临时文件: {}", file.getAbsolutePath());
+                        } else {
+                            log.error("文件清理失败: {}", file.getAbsolutePath());
+                        }
+                    }
+                } catch (SecurityException e) {
+                    log.error("权限不足，无法删除文件: {}", file.getAbsolutePath());
+                }
+            }
+        }
     }
 }
 ```
@@ -575,16 +670,41 @@ public class AuthorizeController { // 用户认证控制器
 
 **亮点描述：**
 
-- **图片水印算法**：在 `ImageUtil` 中实现复杂水印逻辑（如渐变色、描边、阴影、仿射变换），支持自定义字体（通过 `Font.createFont` 动态加载 TTF 文件）
-- **内存流优化**：使用 `ByteArrayOutputStream` 和 `ZipArchiveOutputStream` 在内存中生成 ZIP 文件，避免磁盘 IO 开销
+- **图片水印算法**：在 `ImageUtil` 中实现复杂水印逻辑（如背景图层、渐变色、描边、阴影、仿射变换），支持自定义字体（通过 `Font.createFont` 动态加载 TTF 文件）
+- **零中间文件的 ZIP 流式生成**：基于 `ZipArchiveOutputStream` 实现内存到 ZIP 的直写流水线，图像处理后直接通过流式 API 写入压缩包，避免磁盘临时文件周转，降低 IO 开销
 - **线程安全的临时文件管理**：通过 `FileUtil.deleteDirectory` 递归删除临时目录，确保资源及时释放
 
 **代码片段：**
 
 ```java
 public class ImageUtil {
-    public static BufferedImage handleWatermark(WatermarkParams p, Image image, String watermark) throws FontNotFoundException { // 处理图片水印
-		// ...
+public static BufferedImage handleWatermark(WatermarkParams p, Image image, Image backgroundImage, String watermark) throws IOException, FontNotFoundException { // 处理图片水印
+        int width = image.getWidth(null), height = image.getHeight(null);
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bufferedImage.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, width, height);
+        g.drawImage(image, 0, 0, width, height, null);
+        if (backgroundImage != null) { // 背景图层
+            BufferedImage styleImage = toBufferedImage(backgroundImage);
+            int styleWidth = styleImage.getWidth(), styleHeight = styleImage.getHeight();
+            int minWidth = Math.min(width, styleWidth), minHeight = Math.min(height, styleHeight);
+            int[] stylePixels = ((DataBufferInt) styleImage.getRaster().getDataBuffer()).getData();
+            int[] destPixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+            for (int y = 0; y < minHeight; y++) {
+                int styleRowOffset = y * styleWidth, destRowOffset = y * width;
+                for (int x = 0; x < minWidth; x++) {
+                    int stylePixel = stylePixels[styleRowOffset + x];
+                    int styleAlpha = (stylePixel >>> 24) & 0xFF;
+                    if (styleAlpha != 0) {
+                        int destPixel = destPixels[destRowOffset + x];
+                        int blendedPixel = getBlendedPixel(destPixel, stylePixel, styleAlpha);
+                        destPixels[destRowOffset + x] = blendedPixel;
+                    }
+                }
+            }
+        }
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         Font font = getFont(p.getFontName(), p.getFontStyles(), p.getFontSize());
         if (font == null) throw new FontNotFoundException("字体 [" + p.getFontName() + "] 未安装在系统中");
         g.setFont(font); // 字体
@@ -592,7 +712,7 @@ public class ImageUtil {
         if (p.getRotation() != 0 || p.getShearX() != 0) { // 仿射变换
             g.transform(getAffineTransform(p));
         }
-        if (p.getShadowOpacity() != 0) { // 阴影
+        if (p.getShadowOpacity() != 0) { // 投影
             Composite originalComposite = g.getComposite();
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, p.getShadowOpacity()));
             g.setColor(p.getShadowColor());
@@ -629,7 +749,7 @@ public class ImageUtil {
         } else {
             g.setColor(p.getFontColor());
         }
-        for (int i = 0, x = p.getX(), y = p.getY(); i < watermark.length(); i++) { // 绘制水印本体
+        for (int i = 0, x = p.getX(), y = p.getY(); i < watermark.length(); i++) {
             char c = watermark.charAt(i);
             g.drawString(String.valueOf(c), x, y);
             x += (p.getIncludeCharWidthInDx() ? fm.charWidth(c) : 0) + p.getDx();
@@ -642,14 +762,19 @@ public class ImageUtil {
 ```
 
 ```java
-public void handleFileUpload(String username, byte[] fileBytes, WatermarkParams params) throws IOException, InterruptedException, FontNotFoundException {
-    File tempDir = Files.createTempDirectory("temp").toFile(); // 创建临时目录
+public void handleFileUpload(String username, InputStream fileStream, WatermarkParams params, Image backgroundImage) throws IOException, InterruptedException, FontNotFoundException {
+    File input = Files.createTempDirectory("input").toFile();
+    File output = Files.createTempFile("output", ".zip").toFile(); // 创建临时目录
     try {
-        FileUtil.unzip(fileBytes, tempDir); // 解压 ZIP 文件到临时目录
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(); // 使用内存流生成最终的 ZIP 文件（避免磁盘 IO）
-        try (ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(bos)) {
-            		// ...
-                    ImageUtil.handleImage(params, f, price, zipOut);
+        FileUtil.unzip(fileStream, input); // 解压 ZIP 文件到临时目录
+        try (FileOutputStream fos = new FileOutputStream(output);
+             ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(fos)) {
+                        // ...
+                        ImageUtil.handleImage(params, ImageIO.read(f), price, backgroundImage, zipOut);
+                        zipOut.closeArchiveEntry();
+                        tableNoMatch.remove(mid);
+                        successMatch.add(mid);
+                    }
                     int progress = ++validFilesCount * 100 / (files.length - 1);
                     if (progress == 100) progress = 99; // 等待收尾工作
                     P.put(username, progress); // 实时更新进度
@@ -659,17 +784,17 @@ public void handleFileUpload(String username, byte[] fileBytes, WatermarkParams 
             } finally {
                 Map<String, Set<String>> info = new HashMap<>( // 收集任务执行的附加信息
                         Map.ofEntries(
-                            Map.entry("successMatch", successMatch),
-                            Map.entry("tableNoMatch", tableNoMatch),
-                            Map.entry("imageNoMatch", imageNoMatch)
+                            Map.entry("successMatch", filterEmptyStrings(successMatch)),
+                            Map.entry("tableNoMatch", filterEmptyStrings(tableNoMatch)),
+                            Map.entry("imageNoMatch", filterEmptyStrings(imageNoMatch))
                 ));
                 INFO.put(username, info);
             }
         }
-        ZIP.put(username, bos.toByteArray()); // 将最终的 ZIP 数据存入内存 Map
+        ZIP.put(username, output); // 将最终的 ZIP 数据存入 Map
         P.put(username, 100); // 标记任务完成
     } finally {
-        FileUtil.deleteDirectory(tempDir); // 无论是否异常，删除临时目录释放资源
+        FileUtil.deleteDirectory(input); // 无论是否异常，删除临时目录释放资源
     }
 }
 ```
@@ -785,9 +910,11 @@ public class FileUtil {
     public static final Set<String> IMAGE = new HashSet<>(List.of( // 支持的图片形式
             "jpg", "jpeg", "png", "webp"
     ));
+    public static final Pattern ERROR_PATTERN = Pattern.compile("[\\\\/:*?\"<>|]");
+    public static final String ERROR_PATH = "ERROR-" + UUID.randomUUID().toString().substring(0, 8);
 
-    public static void unzip(byte[] fileBytes, File destDir) throws IOException { // 解压 ZIP 文件到目标目录
-        try (ZipArchiveInputStream zipIn = new ZipArchiveInputStream(new ByteArrayInputStream(fileBytes))) {
+    public static void unzip(InputStream fileStream, File destDir) throws IOException { // 解压 ZIP 文件到目标目录
+        try (ZipArchiveInputStream zipIn = new ZipArchiveInputStream(fileStream)) {
             ZipArchiveEntry entry;
             while ((entry = zipIn.getNextZipEntry()) != null) {
                 File entryDestination = new File(destDir, entry.getName());
@@ -811,6 +938,10 @@ public class FileUtil {
             }
             dir.delete();
         }
+    }
+
+    public static boolean checkFileName(String name) { // 判断文件名合法性
+        return ERROR_PATTERN.matcher(name).find();
     }
 }
 ```
@@ -860,19 +991,19 @@ public class FileUtil {
 
 ## 📊 代码量统计
 
-数据截止至 **v1.5.2**
+数据截止至 **v1.5.3**
 
-（单位：行）
+（单位：行，不包含文档代码）
 
 |      项目名      | 后端 | 前端 | 总和 |
 | :--------------: | :--: | :--: | :--: |
-|    猜数字游戏    | 153  | 311  | 464  |
+|    猜数字游戏    | 153  | 337  | 490  |
 |    角色自截图    | 163  | 446  | 609  |
-|    连连看游戏    | 169  | 1057 | 1226 |
-|   简单爬虫脚本   | 250  | 209  | 459  |
-| 批量图片水印处理 | 969  | 1269 | 2238 |
-|   （其他代码）   | 772  | 1288 | 2060 |
-|     **总和**     | 2476 | 4580 | 7056 |
+|    连连看游戏    | 169  | 1188 | 1357 |
+|   简单爬虫脚本   | 250  | 217  | 467  |
+| 批量图片水印处理 | 1127 | 1286 | 2413 |
+|   （其他代码）   | 818  | 1425 | 2243 |
+|     **总和**     | 2680 | 4899 | 7579 |
 
 
 
@@ -912,6 +1043,7 @@ backend
 │   │   │           │   │   └── RestBean.java
 │   │   │           │   └── other
 │   │   │           │       ├── GuessNumber.java
+│   │   │           │       ├── ImageInfo.java
 │   │   │           │       ├── WatermarkData.java
 │   │   │           │       └── WatermarkParams.java
 │   │   │           ├── exception
@@ -970,6 +1102,7 @@ frontend
 │   │   ├── BatchImageWatermarker.png
 │   │   ├── CharacterMap.png
 │   │   ├── Crawler.png
+│   │   ├── Document.png
 │   │   ├── GuessNumber.png
 │   │   ├── LinkGame.png
 │   │   └── Test.png
@@ -1051,7 +1184,10 @@ frontend
 │   │   ├── 野雁.zip
 │   │   ├── 青山蓝山.zip
 │   │   └── 香风智乃.zip
-│   └── favicon.png
+│   ├── favicon.png
+│   ├── 产品使用手册.html
+│   ├── 技术开发文档.html
+│   └── 项目文档.html
 ├── src
 │   ├── components
 │   │   ├── layout
@@ -1075,6 +1211,7 @@ frontend
 │   │   │   ├── CharacterMap.vue
 │   │   │   └── CharacterMapSub.vue
 │   │   ├── common
+│   │   │   ├── Document.vue
 │   │   │   ├── Index.vue
 │   │   │   ├── Test.vue
 │   │   │   └── Welcome.vue
@@ -1163,6 +1300,29 @@ frontend
 * 邮件发送改为异步
 * 新增支持上传 .otf 字体文件，完善了图片水印处理的字体选择逻辑
 
+**2025-5-5：[1.5.3]**
+
+* **架构优化**：
+  * 重构前后端Base64传输协议，标准化数据字段结构（前后端仅传输原始二进制数据，前端渲染时动态添加data:image/jpeg;base64,头信息）
+  * 实现图片水印处理路径自定义功能，支持输出目录指定与文件重命名规则配置
+  * 完成MySQL和Redis数据库服务迁移，通过独立部署缓解主服务器资源压力
+
+* **性能提升**：
+    * 将任务处理线程模型升级为动态线程池，实现并发请求的弹性资源分配
+    * 优化内存管理策略，采用流式处理替代全量二进制读写，配合定时任务自动清理缓存文件
+    
+* **功能增强**：
+    * 新增PNG格式样式图层兼容支持，确保特效渲染结果图完整性
+    * 增强用户认证体系与「记住我」功能稳定性，降低未授权访问(401)异常触发频率
+    
+* **移动端适配**：
+    * 重构响应式布局框架，实现PC/移动端跨设备分辨率兼容
+
+    * 优化触摸事件监听系统，使角色自截图、连连看游戏等交互组件全面支持移动端触控操作
+
+* **文档完善**：
+  * 主页新增产品使用手册与技术开发文档模块，提供终端用户操作指南与开发者技术说明
+
 
 
 ## 🤝 贡献指南
@@ -1197,19 +1357,14 @@ frontend
 ## ❓ 常见问题
 
 ### 在线访问
-1. **上传压缩包报内存错误**
+1. **文件处理过程中进度条卡住**
 
    ▸ 当前服务器配置为 2G 内存，上传超过 200MB 的 .zip 文件可能导致内存溢出 
    ▸ 临时方案：请将压缩包控制在 200MB 以内，分批上传处理 
-   ▸ 优化计划：后续将实现全程采用流式内存处理方案，并支持服务器内存扩容
-
-2. **移动端显示与交互问题**
-
-   ▸ *界面适配*：角色自截图在移动端暂仅支持单列显示（PC端支持 1-4 列），正在开发响应式布局
-   ▸ *游戏交互*：移动端「连连看」滑动操作会触发浏览器默认滚动行为，后续将添加样式约束
+   ▸ 优化计划：等我有钱了给服务器内存扩容
 
 ### 本地部署
-3. **字体缺失报错处理**
+1. **字体缺失报错处理**
    
    ```diff
    + 系统预设样式报错：
@@ -1220,7 +1375,7 @@ frontend
      请根据提示上传字体文件
    ```
 
-4. **角色自截图批量下载不全** 
+2. **角色自截图批量下载不全** 
    
    ▸ *现象说明*：因 GitHub 仓库限制大文件上传，压缩包中仅包含阉割版角色图集
    
@@ -1256,5 +1411,5 @@ frontend
 衷心感谢您的关注与支持！
 —— 项目开发者 星开祈灵 (*´∀`)~♥ 
 
-![星开祈灵百宝箱 项目文档-0.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-0.png)
+![星开祈灵百宝箱 项目文档-29.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱 项目文档-29.png)
 

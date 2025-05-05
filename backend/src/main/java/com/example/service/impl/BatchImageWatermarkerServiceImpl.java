@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.example.convert.WatermarkParamsConvert;
 import com.example.dto.WatermarkDataDTO;
 import com.example.dto.WatermarkParamsDTO;
+import com.example.entity.other.ImageInfo;
 import com.example.entity.other.WatermarkData;
 import com.example.entity.other.WatermarkParams;
 import com.example.exception.FontNotFoundException;
@@ -11,56 +12,72 @@ import com.example.service.api.BatchImageWatermarkerService;
 import com.example.util.FileUtil;
 import com.example.util.ImageUtil;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerService {
 
     @Resource
     WatermarkMapper mapper;
 
-    private static final Map<String, Thread> T = new ConcurrentHashMap<>();
+    private static final Map<String, Future<?>> T = new ConcurrentHashMap<>();
     private static final Map<String, Integer> P = new ConcurrentHashMap<>();
-    private static final Map<String, byte[]> ZIP = new ConcurrentHashMap<>();
+    private static final Map<String, File> ZIP = new ConcurrentHashMap<>();
     private static final Map<String, Map<String, Set<String>>> INFO = new ConcurrentHashMap<>();
 
+    private final ExecutorService executor = new ThreadPoolExecutor(
+            2,
+            6,
+            30, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(10),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+    );
 
     @Override
-    public void startTask(String username, byte[] fileBytes, WatermarkParams params) {
-        Thread thread = new Thread(() -> {
+    public void startTask(String username, InputStream fileStream, WatermarkParams params, Image backgroundImage) {
+        cleanupResources(username);
+        Future<?> future = executor.submit(() -> {
             try {
-                handleFileUpload(username, fileBytes, params);
-            } catch (InterruptedException | IOException | FontNotFoundException e) {
-                P.remove(username);
-                T.remove(username);
-                ZIP.remove(username);
-                INFO.remove(username);
+                handleFileUpload(username, fileStream, params, backgroundImage);
+            } catch (Exception e) {
+                cleanupResources(username);
+                log.error("进程崩溃：{}", e.getMessage());
                 throw new RuntimeException(e);
             }
         });
-        ZIP.remove(username);
+        T.put(username, future);
+    }
+
+    private void cleanupResources(String username) {
+        P.remove(username);
+        T.remove(username);
         INFO.remove(username);
-        T.put(username, thread);
-        thread.start();
+        ZIP.remove(username);
     }
 
     @Override
@@ -70,12 +87,16 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
     @Override
     public ResponseEntity<InputStreamResource> getZipFile(String username) {
-        byte[] zipData = ZIP.getOrDefault(username, null);
-        if (zipData == null) return null;
-        return ResponseEntity.ok() // 构建响应，返回 ZIP 文件流
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=modified.zip") // 设置响应头，提示浏览器下载
-                .contentType(MediaType.APPLICATION_OCTET_STREAM) // 设置内容类型为二进制流
-                .body(new InputStreamResource(new ByteArrayInputStream(zipData))); // 将字节数组转换为输入流
+        File file = ZIP.getOrDefault(username, null);
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=modified.zip")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(new FileInputStream(file)));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new InputStreamResource(new ByteArrayInputStream("{\"message\":\"服务器内部错误\"}".getBytes())));
+        }
     }
 
     @Override
@@ -85,12 +106,9 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
     @Override
     public void stopTask(String username) {
-        Thread thread = T.get(username);
-        if (thread != null) thread.interrupt();
-        P.remove(username);
-        T.remove(username);
-        ZIP.remove(username);
-        INFO.remove(username);
+        Future<?> future = T.get(username);
+        if (future != null) future.cancel(true);
+        cleanupResources(username);
     }
 
     @Override
@@ -146,7 +164,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
             if (image == null) {
                 throw new IllegalArgumentException("无法解析图像数据（格式不支持或数据损坏）");
             }
-            BufferedImage bufferedImage = ImageUtil.handleWatermark(params, image, "1234");
+            BufferedImage bufferedImage = ImageUtil.handleWatermark(params, image, null, "1234");
             try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                 ImageIO.write(bufferedImage, "jpeg", baos);
                 baos.flush();
@@ -174,35 +192,67 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
         return fileName;
     }
 
-    public void handleFileUpload(String username, byte[] fileBytes, WatermarkParams params) throws IOException, InterruptedException, FontNotFoundException {
-        File tempDir = Files.createTempDirectory("temp").toFile();
+    public void handleFileUpload(String username, InputStream fileStream, WatermarkParams params, Image backgroundImage) throws IOException, InterruptedException, FontNotFoundException {
+        File input = Files.createTempDirectory("input").toFile();
+        File output = Files.createTempFile("output", ".zip").toFile();
         try {
-            FileUtil.unzip(fileBytes, tempDir);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try (ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(bos)) { // 重新压缩修改后的文件到内存流
+            FileUtil.unzip(fileStream, input);
+            try (FileOutputStream fos = new FileOutputStream(output);
+                 ZipArchiveOutputStream zipOut = new ZipArchiveOutputStream(fos)) {
                 AtomicReference<File> tableRef = new AtomicReference<>();
-                File[] files = Objects.requireNonNull(tempDir.listFiles())[0].listFiles();
+                File[] files = Objects.requireNonNull(input.listFiles())[0].listFiles();
                 String exMessage = check(files, tableRef);
                 if (exMessage != null) {
                     throw new IllegalArgumentException(exMessage);
                 }
                 File table = tableRef.get();
-                Map<String, String> map = new HashMap<>();
+                Map<String, ImageInfo> map = new HashMap<>();
+                Map<String, Integer> entriesCnt = new HashMap<>();
                 DataFormatter dataFormatter = new DataFormatter();
                 Set<String> successMatch = new HashSet<>(), tableNoMatch = map.keySet(), imageNoMatch = new HashSet<>();
                 try (XSSFWorkbook workbook = new XSSFWorkbook(table)) {
                     XSSFSheet sheet = workbook.getSheetAt(0);
                     for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                        String mid = dataFormatter.formatCellValue(sheet.getRow(i).getCell(0));
-                        String price = dataFormatter.formatCellValue(sheet.getRow(i).getCell(1));
-                        map.put(mid, price);
+                        Row row = sheet.getRow(i);
+                        String mid = dataFormatter.formatCellValue(row.getCell(0));
+                        String price = dataFormatter.formatCellValue(row.getCell(1));
+                        String fileName = dataFormatter.formatCellValue(row.getCell(2));
+                        fileName = fileName.isEmpty() ? mid : fileName;
+                        boolean flag = FileUtil.checkFileName(fileName);
+                        fileName += ".jpg";
+                        List<String> pathSegments = new ArrayList<>();
+                        int colIdx = 3;
+                        while (true) {
+                            String segment = dataFormatter.formatCellValue(row.getCell(colIdx++));
+                            if (segment == null || segment.trim().isEmpty()) break;
+                            if (FileUtil.checkFileName(segment)) {
+                                flag = true;
+                                break;
+                            }
+                            pathSegments.add(segment);
+                        }
+                        String fullPath = pathSegments.isEmpty()
+                                ? fileName
+                                : String.join("/", pathSegments) + "/" + fileName;
+                        if (flag) {
+                            fullPath = FileUtil.ERROR_PATH + "/" + mid + ".jpg";
+                        }
+                        int cnt = entriesCnt.getOrDefault(fullPath, 0);
+                        if (cnt > 0) {
+                            int idx = fullPath.lastIndexOf('.');
+                            String prefix = fullPath.substring(0, idx), suffix = fullPath.substring(idx);
+                            fullPath = prefix + "(" + cnt + ")" + suffix;
+                        }
+                        ImageInfo imageInfo = new ImageInfo(mid, price, fullPath);
+                        map.put(mid, imageInfo);
+                        entriesCnt.merge(fullPath, 1, Integer::sum);
                     }
                     int validFilesCount = 0;
                     try {
                         String fontName = params.getFontName();
                         if (ImageUtil.getFont(fontName, 0, 0) == null) throw new FontNotFoundException("字体 [" + fontName + "] 未安装在系统中");
                     } catch (FontNotFoundException e) {
-                        System.err.println("异常信息: " + e.getMessage());
+                        log.error("异常信息: {}", e.getMessage());
                     }
                     for (File f: files) {
                         if (Thread.currentThread().isInterrupted()) {
@@ -212,12 +262,13 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                         String type = mid.substring(mid.lastIndexOf(".") + 1);
                         if (FileUtil.TABLE.contains(type)) continue;
                         mid = mid.substring(0, mid.lastIndexOf('.'));
-                        String price = map.get(mid);
-                        if (price == null) imageNoMatch.add(mid);
+                        ImageInfo imageInfo = map.get(mid);
+                        if (imageInfo == null) imageNoMatch.add(mid);
                         else {
-                            ZipArchiveEntry entry = new ZipArchiveEntry(f.getName());
+                            String price = imageInfo.getPrice(), path = imageInfo.getPath();
+                            ZipArchiveEntry entry = new ZipArchiveEntry(path);
                             zipOut.putArchiveEntry(entry);
-                            ImageUtil.handleImage(params, f, price, zipOut);
+                            ImageUtil.handleImage(params, ImageIO.read(f), price, backgroundImage, zipOut);
                             zipOut.closeArchiveEntry();
                             tableNoMatch.remove(mid);
                             successMatch.add(mid);
@@ -231,17 +282,17 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                 } finally {
                     Map<String, Set<String>> info = new HashMap<>(
                             Map.ofEntries(
-                                Map.entry("successMatch", successMatch),
-                                Map.entry("tableNoMatch", tableNoMatch),
-                                Map.entry("imageNoMatch", imageNoMatch)
+                                Map.entry("successMatch", filterEmptyStrings(successMatch)),
+                                Map.entry("tableNoMatch", filterEmptyStrings(tableNoMatch)),
+                                Map.entry("imageNoMatch", filterEmptyStrings(imageNoMatch))
                     ));
                     INFO.put(username, info);
                 }
             }
-            ZIP.put(username, bos.toByteArray());
+            ZIP.put(username, output);
             P.put(username, 100);
         } finally {
-            FileUtil.deleteDirectory(tempDir);
+            FileUtil.deleteDirectory(input);
         }
     }
 
@@ -260,5 +311,37 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
         if (table == null) return "表格文件不存在！";
         else tableRef.set(table);
         return null;
+    }
+
+    private Set<String> filterEmptyStrings(Collection<String> collection) {
+        return collection.stream()
+                .filter(s -> s != null && !s.isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    @Scheduled(fixedRate = 3600 * 1000)
+    public void cleanupTempFiles() {
+        String tmpDirPath = System.getProperty("java.io.tmpdir");
+        File tempDir = new File(tmpDirPath);
+        File[] files = tempDir.listFiles((dir, name) ->
+                name.toLowerCase().startsWith("output") && name.toLowerCase().endsWith(".zip")
+        );
+        if (files != null) {
+            long now = System.currentTimeMillis();
+            for (File file : files) {
+                try {
+                    if (now - file.lastModified() > 3600 * 1000) {
+                        boolean deleted = file.delete();
+                        if (deleted) {
+                            log.info("已清理过期临时文件: {}", file.getAbsolutePath());
+                        } else {
+                            log.error("文件清理失败: {}", file.getAbsolutePath());
+                        }
+                    }
+                } catch (SecurityException e) {
+                    log.error("权限不足，无法删除文件: {}", file.getAbsolutePath());
+                }
+            }
+        }
     }
 }

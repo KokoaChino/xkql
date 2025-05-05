@@ -101,9 +101,9 @@ public class SecurityConfiguration {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         response.setCharacterEncoding("utf-8");
-        if(request.getRequestURI().endsWith("/login"))
+        if (request.getRequestURI().endsWith("/login"))
             response.getWriter().write(JSONObject.toJSONString(RestBean.success("登录成功")));
-        else if(request.getRequestURI().endsWith("/logout"))
+        else if (request.getRequestURI().endsWith("/logout"))
             response.getWriter().write(JSONObject.toJSONString(RestBean.success("退出登录成功")));
     }
 

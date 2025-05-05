@@ -6,6 +6,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class FileUtil {
@@ -16,9 +17,11 @@ public class FileUtil {
     public static final Set<String> IMAGE = new HashSet<>(List.of( // 支持的图片形式
             "jpg", "jpeg", "png", "webp"
     ));
+    public static final Pattern ERROR_PATTERN = Pattern.compile("[\\\\/:*?\"<>|]");
+    public static final String ERROR_PATH = "ERROR-" + UUID.randomUUID().toString().substring(0, 8);
 
-    public static void unzip(byte[] fileBytes, File destDir) throws IOException { // 解压 ZIP 文件到目标目录
-        try (ZipArchiveInputStream zipIn = new ZipArchiveInputStream(new ByteArrayInputStream(fileBytes))) {
+    public static void unzip(InputStream fileStream, File destDir) throws IOException { // 解压 ZIP 文件到目标目录
+        try (ZipArchiveInputStream zipIn = new ZipArchiveInputStream(fileStream)) {
             ZipArchiveEntry entry;
             while ((entry = zipIn.getNextZipEntry()) != null) {
                 File entryDestination = new File(destDir, entry.getName());
@@ -42,5 +45,9 @@ public class FileUtil {
             }
             dir.delete();
         }
+    }
+
+    public static boolean checkFileName(String name) { // 判断文件名合法性
+        return ERROR_PATTERN.matcher(name).find();
     }
 }

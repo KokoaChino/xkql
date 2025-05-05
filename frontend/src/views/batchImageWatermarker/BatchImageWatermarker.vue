@@ -1,437 +1,439 @@
 <template>
-    <Title/>
-    <div class="container">
-        <div class="upload-section" v-loading="isRunning">
-            <el-upload
-                :http-request="customUpload"
-                :before-upload="beforeUpload"
-                :show-file-list="false"
-                class="custom-upload"
-            >
-                <div class="upload-content">
-                    <el-icon class="upload-icon">
-                        <Plus />
-                    </el-icon>
-                    <div class="upload-text">请上传 .zip 文件</div>
-                </div>
-            </el-upload>
-        </div>
-        <div v-if="progress > 0">
-            <el-progress
-                :percentage="progress"
-                :stroke-width="24"
-                color="#409EFF"
-                :text-inside="true"
-                class="custom-progress"
-            >
-                <span class="progress-text">{{ progress }}%</span>
-            </el-progress>
-            <div class="result-container">
-                <div class="result-block">
-                    <div class="block-header">匹配成功：{{ successMatch.length }} 个</div>
-                    <el-table
-                        :data="Array.from(successMatch)"
-                        height="200"
-                        class="match-table"
-                        :show-header="false"
-                        :empty-text="' '"
-                    >
-                        <el-table-column width="300">
-                            <template #default="{ row }">
-                                <div class="match-item">{{ row }}</div>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-                <div class="result-block">
-                    <div class="block-header">表匹配失败：{{ tableNoMatch.length }} 个</div>
-                    <el-table
-                        :data="Array.from(tableNoMatch)"
-                        height="200"
-                        class="match-table"
-                        :show-header="false"
-                        :empty-text="' '"
-                    >
-                        <el-table-column width="300">
-                            <template #default="{ row }">
-                                <div class="match-item">{{ row }}</div>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-                <div class="result-block">
-                    <div class="block-header">图匹配失败：{{ imageNoMatch.length }} 个</div>
-                    <el-table
-                        :data="Array.from(imageNoMatch)"
-                        height="200"
-                        class="match-table"
-                        :show-header="false"
-                        :empty-text="' '"
-                    >
-                        <el-table-column width="300">
-                            <template #default="{ row }">
-                                <div class="match-item">{{ row }}</div>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-            </div>
-        </div>
-        <div class="selection-style" v-if="!isCustomStyle">
-            <div
-                v-for="(data, i) in presetModes"
-                :key="i"
-                class="select-item"
-                :class="{ active: i + 1 === mode }"
-                @click="mode = i + 1"
-            >
-                <img
-                    :src="`/批量图片水印处理/预设样式 ${ i + 1 }.jpg`"
-                    class="select-image"
-                    :alt="`预设样式 ${ i + 1 }`"/>
-                <div class="select-number">预设样式 {{ i + 1 }}</div>
-            </div>
-        </div>
-        <div class="selection-style" v-else v-loading="loading2">
-            <div class="select-item custom-preview"
-                v-for="(data, i) in customModes"
-                :key="i"
-                :class="{ active: i + 1 === mode }"
-                @click="mode = i + 1"
-                @mouseenter="showButton[i] = true"
-                @mouseleave="showButton[i] = false"
-            >
-                <div v-if="i === customModes.length - 1">
-                    <img
-                        :src="customModes[i].previewImage"
-                        class="select-image"
-                        alt="添加自定义样式"/>
-                    <div class="select-number" style="color: #27c627">自定义样式编辑区</div>
-                </div>
-                <div v-else>
-                    <img
-                        :src="customModes[i].previewImage"
-                        class="select-image"
-                        :alt="`自定义样式 ${ i + 1 }`"/>
-                    <div class="select-number">自定义样式 {{ i + 1 }}</div>
-                    <button
-                        class="custom-btn"
-                        :class="{ 'is-visible': showButton[i] }"
-                        @click="deleteCustomStyle(i)">
-                        <span class="btn-icon">×</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="control-bar">
-            <div class="radio-container" >
-                <el-radio-group v-model="style" size="large">
-                    <el-radio-button label="预设样式" value="预设样式" />
-                    <el-radio-button label="自定义样式" value="自定义样式" />
-                </el-radio-group>
-            </div>
-            <el-button
-                size="large"
-                type="primary"
-                @click="addCustomStyle"
-                :disabled="!isCustomStyle"
-            >
-                <span v-if="isCustomStyle && mode === customModes.length">添加样式</span>
-                <span v-else>更新样式</span>
-            </el-button>
-        </div>
-        <div class="params-container">
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <h2 class="header-with-button">
-                        样式参数
-                        <el-button class="right-button"
-                                   size="large"
-                                   type="info"
-                                   @click="refill"
-                                   :disabled="!isCustomStyle">重置样式参数</el-button>
-                    </h2>
-                    <div class="params-panel">
-                        <el-collapse v-model="activeCollapse">
-                            <el-collapse-item name="位置">
-                                <template #title>
-                                    <span class="collapse-title">位置</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            坐标
-                                            <el-input-number
-                                                v-model="params.x"
-                                                :min="-3000" :max="3000"
-                                            />
-                                            <el-input-number
-                                                v-model="params.y"
-                                                :min="-3000" :max="3000"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="字符偏移">
-                                <template #title>
-                                    <span class="collapse-title">字符偏移</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            水平偏移
-                                            <el-input-number v-model="params.dx"
-                                                             :min="-3000" :max="3000"/>
-                                            包含字符宽度
-                                            <el-switch v-model="params.includeCharWidthInDx"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            垂直偏移
-                                            <el-input-number v-model="params.dy"
-                                                             :min="-3000" :max="3000"/>
-                                            包含字符高度
-                                            <el-switch v-model="params.includeCharHeightInDy"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="字体">
-                                <template #title>
-                                    <span class="collapse-title">字体</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            颜色
-                                            <el-color-picker v-model="params.fontColor"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            名称
-                                            <el-input
-                                                v-model="fontNameTmp"
-                                                @blur="params.fontName = fontNameTmp"
-                                                style="width: 350px"
-                                                placeholder="请输入字体名称"
-                                                clearable
-                                            />
-                                        </div>
-                                        <div class="optional-row">
-                                            样式
-                                            <el-checkbox-group v-model="params.fontStyles">
-                                                <el-checkbox-button label="粗体">粗体</el-checkbox-button>
-                                                <el-checkbox-button label="斜体">斜体</el-checkbox-button>
-                                            </el-checkbox-group>
-                                        </div>
-                                        <div class="optional-row">
-                                            大小
-                                            <el-input-number
-                                                v-model="params.fontSize"
-                                                :min="0" :max="1000"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="描边">
-                                <template #title>
-                                    <span class="collapse-title">描边</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            颜色
-                                            <el-color-picker v-model="params.strokeColor"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            大小
-                                            <el-input-number
-                                                v-model="params.strokeSize"
-                                                :min="0" :max="100"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="投影">
-                                <template #title>
-                                    <span class="collapse-title">投影</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            投影颜色
-                                            <el-color-picker v-model="params.shadowColor"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            水平偏移
-                                            <el-input-number v-model="params.shadowDx"
-                                                             :min="-3000" :max="3000"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            垂直偏移
-                                            <el-input-number v-model="params.shadowDy"
-                                                             :min="-3000" :max="3000"/>
-                                        </div>
-                                        <div class="optional-row">
-                                            不透明度
-                                            <el-input-number
-                                                v-model="params.shadowOpacity"
-                                                :min="0" :max="1"
-                                                :step="0.1"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="渐变">
-                                <template #title>
-                                    <span class="collapse-title">渐变</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-row" style="margin: 0 40px 15px 15px;">
-                                        字体渐变
-                                        <el-switch v-model="params.fontGradient.enableGradient"/>
-                                        <span style="margin-left: 30px;">描边渐变</span>
-                                        <el-switch v-model="params.strokeGradient.enableGradient"/>
-                                    </div>
-                                    <div class="sub-panel" v-if="params.fontGradient.enableGradient">
-                                        <h4>字体渐变</h4>
-                                        <div class="optional-item">
-                                            <div class="optional-row">
-                                                起始颜色
-                                                <el-color-picker v-model="params.fontGradient.startColor"/>
-                                                <span style="margin-left: 5px;">结束颜色</span>
-                                                <el-color-picker v-model="params.fontGradient.endColor"/>
-                                                循环渐变
-                                                <el-switch v-model="params.fontGradient.cyclic" />
-                                            </div>
-                                            <div class="optional-row">
-                                                起点坐标
-                                                <el-input-number
-                                                    v-model="params.fontGradient.start.x"
-                                                    :min="-3000" :max="3000"/>
-                                                <el-input-number
-                                                    v-model="params.fontGradient.start.y"
-                                                    :min="-3000" :max="3000"/>
-                                            </div>
-                                            <div class="optional-row">
-                                                终点坐标
-                                                <el-input-number
-                                                    v-model="params.fontGradient.end.x"
-                                                    :min="-3000" :max="3000"/>
-                                                <el-input-number
-                                                    v-model="params.fontGradient.end.y"
-                                                    :min="-3000" :max="3000"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="sub-panel" v-if="params.strokeGradient.enableGradient">
-                                        <h4>描边渐变</h4>
-                                        <div class="optional-item">
-                                            <div class="optional-row">
-                                                起始颜色
-                                                <el-color-picker v-model="params.strokeGradient.startColor"/>
-                                                <span style="margin-left: 5px;">结束颜色</span>
-                                                <el-color-picker v-model="params.strokeGradient.endColor"/>
-                                                循环渐变
-                                                <el-switch v-model="params.strokeGradient.cyclic" />
-                                            </div>
-                                            <div class="optional-row">
-                                                起点坐标
-                                                <el-input-number
-                                                    v-model="params.strokeGradient.start.x"
-                                                    :min="-3000" :max="3000"/>
-                                                <el-input-number
-                                                    v-model="params.strokeGradient.start.y"
-                                                    :min="-3000" :max="3000"/>
-                                            </div>
-                                            <div class="optional-row">
-                                                终点坐标
-                                                <el-input-number
-                                                    v-model="params.strokeGradient.end.x"
-                                                    :min="-3000" :max="3000"/>
-                                                <el-input-number
-                                                    v-model="params.strokeGradient.end.y"
-                                                    :min="-3000" :max="3000"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                            <el-collapse-item name="仿射变换">
-                                <template #title>
-                                    <span class="collapse-title">仿射变换</span>
-                                </template>
-                                <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
-                                    <div class="mask" v-if="!isCustomStyle"></div>
-                                    <div class="optional-item">
-                                        <div class="optional-row">
-                                            优先旋转
-                                            <el-switch v-model="params.priorityRotation" />
-                                        </div>
-                                        <div class="optional-row">
-                                            旋转角度
-                                            <el-input-number
-                                                v-model="params.rotation"
-                                                :min="-360" :max="360"
-                                                :step="5"
-                                            />
-                                        </div>
-                                        <div class="optional-row">
-                                            <span style="margin-right: 2px;">X 轴剪切</span>
-                                            <el-input-number
-                                                v-model="params.shearX"
-                                                :min="-5" :max="5"
-                                                :step="0.1"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-collapse-item>
-                        </el-collapse>
+    <div class="main-container">
+        <Title/>
+        <div class="container">
+            <div class="upload-section" v-loading="isRunning">
+                <el-upload
+                    :http-request="customUpload"
+                    :before-upload="beforeUpload"
+                    :show-file-list="false"
+                    class="custom-upload"
+                >
+                    <div class="upload-content">
+                        <el-icon class="upload-icon">
+                            <Plus />
+                        </el-icon>
+                        <div class="upload-text">请上传 .zip 文件</div>
                     </div>
-                </el-col>
-                <el-col :span="12">
-                    <div class="preview-panel" v-if="!isCustomStyle">
-                        <div class="preview-image">
-                            <img :src="`/批量图片水印处理/预设样式 ${ mode }.jpg`" alt="预览图" class="preview-img" />
-                        </div>
-                    </div>
-                    <div class="preview-panel" v-else>
-                        <div class="preview-image" v-loading="loading1"
-                             @mouseenter="showButton1 = true" @mouseleave="showButton1 = false">
-                            <img
-                                :src="previewImage"
-                                alt="预览图"
-                                class="preview-img"
-                            />
-                            <button
-                                class="preview-btn"
-                                :class="{ 'is-visible': showButton1 && backgroundImage !== defaultBackgroundImage }"
-                                @click="deleteBackgroundImage"
-                            >
-                                <span class="btn-icon">×</span>
-                            </button>
-                        </div>
-                        <el-upload
-                            :show-file-list="false"
-                            :before-upload="handleUpload"
-                            accept="image/jpeg"
+                </el-upload>
+            </div>
+            <div v-if="progress > 0">
+                <el-progress
+                    :percentage="progress"
+                    :stroke-width="24"
+                    color="#409EFF"
+                    :text-inside="true"
+                    class="custom-progress"
+                >
+                    <span class="progress-text">{{ progress }}%</span>
+                </el-progress>
+                <div class="result-container">
+                    <div class="result-block">
+                        <div class="block-header">匹配成功：{{ successMatch.length }} 个</div>
+                        <el-table
+                            :data="Array.from(successMatch)"
+                            height="200"
+                            class="match-table"
+                            :show-header="false"
+                            :empty-text="' '"
                         >
-                            <button class="button">
-                                <span class="button-content">上传预览背景图片</span>
-                            </button>
-                        </el-upload>
+                            <el-table-column width="300">
+                                <template #default="{ row }">
+                                    <div class="match-item">{{ row }}</div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </div>
-                </el-col>
-            </el-row>
+                    <div class="result-block">
+                        <div class="block-header">表匹配失败：{{ tableNoMatch.length }} 个</div>
+                        <el-table
+                            :data="Array.from(tableNoMatch)"
+                            height="200"
+                            class="match-table"
+                            :show-header="false"
+                            :empty-text="' '"
+                        >
+                            <el-table-column width="300">
+                                <template #default="{ row }">
+                                    <div class="match-item">{{ row }}</div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                    <div class="result-block">
+                        <div class="block-header">图匹配失败：{{ imageNoMatch.length }} 个</div>
+                        <el-table
+                            :data="Array.from(imageNoMatch)"
+                            height="200"
+                            class="match-table"
+                            :show-header="false"
+                            :empty-text="' '"
+                        >
+                            <el-table-column width="300">
+                                <template #default="{ row }">
+                                    <div class="match-item">{{ row }}</div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+            </div>
+            <div class="selection-style" v-if="!isCustomStyle">
+                <div
+                    v-for="(data, i) in presetModes"
+                    :key="i"
+                    class="select-item"
+                    :class="{ active: i + 1 === mode }"
+                    @click="mode = i + 1"
+                >
+                    <img
+                        :src="`/批量图片水印处理/预设样式 ${ i + 1 }.jpg`"
+                        class="select-image"
+                        :alt="`预设样式 ${ i + 1 }`"/>
+                    <div class="select-number">预设样式 {{ i + 1 }}</div>
+                </div>
+            </div>
+            <div class="selection-style" v-else v-loading="loading2">
+                <div class="select-item custom-preview"
+                     v-for="(data, i) in customModes"
+                     :key="i"
+                     :class="{ active: i + 1 === mode }"
+                     @click="mode = i + 1"
+                     @mouseenter="showButton[i] = true"
+                     @mouseleave="showButton[i] = false"
+                >
+                    <div v-if="i === customModes.length - 1">
+                        <img
+                            :src="prefix + customModes[i].previewImage"
+                            class="select-image"
+                            alt="添加自定义样式"/>
+                        <div class="select-number" style="color: #27c627">自定义样式编辑区</div>
+                    </div>
+                    <div v-else>
+                        <img
+                            :src="prefix + customModes[i].previewImage"
+                            class="select-image"
+                            :alt="`自定义样式 ${ i + 1 }`"/>
+                        <div class="select-number">自定义样式 {{ i + 1 }}</div>
+                        <button
+                            class="custom-btn"
+                            :class="{ 'is-visible': showButton[i] }"
+                            @click="deleteCustomStyle(i)">
+                            <span class="btn-icon">×</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="control-bar">
+                <div class="radio-container" >
+                    <el-radio-group v-model="style" size="large">
+                        <el-radio-button label="预设样式" value="预设样式" />
+                        <el-radio-button label="自定义样式" value="自定义样式" />
+                    </el-radio-group>
+                </div>
+                <el-button
+                    size="large"
+                    type="primary"
+                    @click="addCustomStyle"
+                    :disabled="!isCustomStyle"
+                >
+                    <span v-if="isCustomStyle && mode === customModes.length">添加样式</span>
+                    <span v-else>更新样式</span>
+                </el-button>
+            </div>
+            <div class="params-container">
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <h2 class="header-with-button">
+                            样式参数
+                            <el-button class="right-button"
+                                       size="large"
+                                       type="info"
+                                       @click="refill"
+                                       :disabled="!isCustomStyle">重置样式参数</el-button>
+                        </h2>
+                        <div class="params-panel">
+                            <el-collapse v-model="activeCollapse">
+                                <el-collapse-item name="位置">
+                                    <template #title>
+                                        <span class="collapse-title">位置</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                坐标
+                                                <el-input-number
+                                                    v-model="params.x"
+                                                    :min="-3000" :max="3000"
+                                                />
+                                                <el-input-number
+                                                    v-model="params.y"
+                                                    :min="-3000" :max="3000"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="字符偏移">
+                                    <template #title>
+                                        <span class="collapse-title">字符偏移</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                水平偏移
+                                                <el-input-number v-model="params.dx"
+                                                                 :min="-3000" :max="3000"/>
+                                                包含字符宽度
+                                                <el-switch v-model="params.includeCharWidthInDx"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                垂直偏移
+                                                <el-input-number v-model="params.dy"
+                                                                 :min="-3000" :max="3000"/>
+                                                包含字符高度
+                                                <el-switch v-model="params.includeCharHeightInDy"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="字体">
+                                    <template #title>
+                                        <span class="collapse-title">字体</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                颜色
+                                                <el-color-picker v-model="params.fontColor"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                名称
+                                                <el-input
+                                                    v-model="fontNameTmp"
+                                                    @blur="params.fontName = fontNameTmp"
+                                                    style="width: 350px"
+                                                    placeholder="请输入字体名称"
+                                                    clearable
+                                                />
+                                            </div>
+                                            <div class="optional-row">
+                                                样式
+                                                <el-checkbox-group v-model="params.fontStyles">
+                                                    <el-checkbox-button label="粗体">粗体</el-checkbox-button>
+                                                    <el-checkbox-button label="斜体">斜体</el-checkbox-button>
+                                                </el-checkbox-group>
+                                            </div>
+                                            <div class="optional-row">
+                                                大小
+                                                <el-input-number
+                                                    v-model="params.fontSize"
+                                                    :min="0" :max="1000"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="描边">
+                                    <template #title>
+                                        <span class="collapse-title">描边</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                颜色
+                                                <el-color-picker v-model="params.strokeColor"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                大小
+                                                <el-input-number
+                                                    v-model="params.strokeSize"
+                                                    :min="0" :max="100"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="投影">
+                                    <template #title>
+                                        <span class="collapse-title">投影</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                投影颜色
+                                                <el-color-picker v-model="params.shadowColor"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                水平偏移
+                                                <el-input-number v-model="params.shadowDx"
+                                                                 :min="-3000" :max="3000"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                垂直偏移
+                                                <el-input-number v-model="params.shadowDy"
+                                                                 :min="-3000" :max="3000"/>
+                                            </div>
+                                            <div class="optional-row">
+                                                不透明度
+                                                <el-input-number
+                                                    v-model="params.shadowOpacity"
+                                                    :min="0" :max="1"
+                                                    :step="0.1"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="渐变">
+                                    <template #title>
+                                        <span class="collapse-title">渐变</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-row" style="margin: 0 40px 15px 15px;">
+                                            字体渐变
+                                            <el-switch v-model="params.fontGradient.enableGradient"/>
+                                            <span style="margin-left: 30px;">描边渐变</span>
+                                            <el-switch v-model="params.strokeGradient.enableGradient"/>
+                                        </div>
+                                        <div class="sub-panel" v-if="params.fontGradient.enableGradient">
+                                            <h4>字体渐变</h4>
+                                            <div class="optional-item">
+                                                <div class="optional-row">
+                                                    起始颜色
+                                                    <el-color-picker v-model="params.fontGradient.startColor"/>
+                                                    <span style="margin-left: 5px;">结束颜色</span>
+                                                    <el-color-picker v-model="params.fontGradient.endColor"/>
+                                                    循环渐变
+                                                    <el-switch v-model="params.fontGradient.cyclic" />
+                                                </div>
+                                                <div class="optional-row">
+                                                    起点坐标
+                                                    <el-input-number
+                                                        v-model="params.fontGradient.start.x"
+                                                        :min="-3000" :max="3000"/>
+                                                    <el-input-number
+                                                        v-model="params.fontGradient.start.y"
+                                                        :min="-3000" :max="3000"/>
+                                                </div>
+                                                <div class="optional-row">
+                                                    终点坐标
+                                                    <el-input-number
+                                                        v-model="params.fontGradient.end.x"
+                                                        :min="-3000" :max="3000"/>
+                                                    <el-input-number
+                                                        v-model="params.fontGradient.end.y"
+                                                        :min="-3000" :max="3000"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-panel" v-if="params.strokeGradient.enableGradient">
+                                            <h4>描边渐变</h4>
+                                            <div class="optional-item">
+                                                <div class="optional-row">
+                                                    起始颜色
+                                                    <el-color-picker v-model="params.strokeGradient.startColor"/>
+                                                    <span style="margin-left: 5px;">结束颜色</span>
+                                                    <el-color-picker v-model="params.strokeGradient.endColor"/>
+                                                    循环渐变
+                                                    <el-switch v-model="params.strokeGradient.cyclic" />
+                                                </div>
+                                                <div class="optional-row">
+                                                    起点坐标
+                                                    <el-input-number
+                                                        v-model="params.strokeGradient.start.x"
+                                                        :min="-3000" :max="3000"/>
+                                                    <el-input-number
+                                                        v-model="params.strokeGradient.start.y"
+                                                        :min="-3000" :max="3000"/>
+                                                </div>
+                                                <div class="optional-row">
+                                                    终点坐标
+                                                    <el-input-number
+                                                        v-model="params.strokeGradient.end.x"
+                                                        :min="-3000" :max="3000"/>
+                                                    <el-input-number
+                                                        v-model="params.strokeGradient.end.y"
+                                                        :min="-3000" :max="3000"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                                <el-collapse-item name="仿射变换">
+                                    <template #title>
+                                        <span class="collapse-title">仿射变换</span>
+                                    </template>
+                                    <div class="content-container" :class="{ 'disabled': !isCustomStyle }">
+                                        <div class="mask" v-if="!isCustomStyle"></div>
+                                        <div class="optional-item">
+                                            <div class="optional-row">
+                                                优先旋转
+                                                <el-switch v-model="params.priorityRotation" />
+                                            </div>
+                                            <div class="optional-row">
+                                                旋转角度
+                                                <el-input-number
+                                                    v-model="params.rotation"
+                                                    :min="-360" :max="360"
+                                                    :step="5"
+                                                />
+                                            </div>
+                                            <div class="optional-row">
+                                                <span style="margin-right: 2px;">X 轴剪切</span>
+                                                <el-input-number
+                                                    v-model="params.shearX"
+                                                    :min="-5" :max="5"
+                                                    :step="0.1"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="preview-panel" v-if="!isCustomStyle">
+                            <div class="preview-image">
+                                <img :src="`/批量图片水印处理/预设样式 ${ mode }.jpg`" alt="预览图" class="preview-img" />
+                            </div>
+                        </div>
+                        <div class="preview-panel" v-else>
+                            <div class="preview-image" v-loading="loading1"
+                                 @mouseenter="showButton1 = true" @mouseleave="showButton1 = false">
+                                <img
+                                    :src="prefix + previewImage"
+                                    alt="预览图"
+                                    class="preview-img"
+                                />
+                                <button
+                                    class="preview-btn"
+                                    :class="{ 'is-visible': showButton1 && backgroundImage !== defaultBackgroundImage }"
+                                    @click="deleteBackgroundImage"
+                                >
+                                    <span class="btn-icon">×</span>
+                                </button>
+                            </div>
+                            <el-upload
+                                :show-file-list="false"
+                                :before-upload="handleUpload"
+                                accept="image/jpeg,image/png"
+                            >
+                                <button class="button">
+                                    <span class="button-content">上传背景样式图片</span>
+                                </button>
+                            </el-upload>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
         </div>
     </div>
 </template>
@@ -512,13 +514,14 @@ const defaultParams = {
     priorityRotation: true
 }
 const params = ref(JSON.parse(JSON.stringify(defaultParams)))
-const backgroundImage = ref("")
+const backgroundImage = ref(null), prefix = "data:image/jpeg;base64,"
 const previewImage = ref(""), fontNameTmp = ref("")
 const colorSet = new Set(["startColor", "endColor", "fontColor", "strokeColor", "shadowColor"])
 const numberSet = new Set(["x", "y", "dx", "dy", "fontSize", "strokeSize", "shadowDx", "shadowDy", "shadowOpacity", "rotation", "shearX"])
 
 watch(style, (newVal) => {
     isCustomStyle.value = newVal === "自定义样式"
+    if (!isCustomStyle.value) backgroundImage.value = null
     skipParamsUpdate.value = true
     mode.value = 1
     toParams()
@@ -584,7 +587,7 @@ const toPreviewImage = async () => {
                 const { type, message } = error.response.data;
                 if (type === "FontNotFoundException") {
                     ElMessage.error("字体未找到异常：" + message);
-                    await handleTTF(message)
+                    await handleUploadFontFile(message)
                 }
             }
         }
@@ -651,7 +654,7 @@ const checkFont = async (fontName) => {
     if (!res) {
         let message = "字体 [" + fontName + "] 未安装在系统中"
         ElMessage.error("字体未找到异常：" + message)
-        await handleTTF(message)
+        await handleUploadFontFile(message)
     }
     return res
 }
@@ -685,7 +688,7 @@ const addCustomStyle = async () => {
     }
 }
 
-const handleTTF = async (message) => {
+const handleUploadFontFile = async (message) => {
     await ElMessageBox.confirm(
         '请上传 .ttf/.otf 字体文件',
         message,
@@ -701,13 +704,13 @@ const handleTTF = async (message) => {
         input.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            handleUploadTTF(file);
+            handleFontFile(file);
         };
         input.click();
     }).catch(() => {});
 };
 
-const handleUploadTTF = async (file) => {
+const handleFontFile = async (file) => {
     const isValidExtension = file.name.toLowerCase().endsWith('.ttf') || file.name.toLowerCase().endsWith('.otf')
     if (!isValidExtension) {
         ElMessage.warning('文件类型不正确，请上传有效的 .ttf/.otf 字体文件')
@@ -732,15 +735,15 @@ const handleUploadTTF = async (file) => {
 };
 
 const handleUpload = (file) => {
-    const isJpeg = file.type === 'image/jpeg';
-    if (!isJpeg) {
-        ElMessage.error('只能上传 JPEG 格式图片！');
+    const isImage = ['image/jpeg', 'image/png'].includes(file.type);
+    if (!isImage) {
+        ElMessage.error('只能上传 JPEG/PNG 格式图片！');
         return false;
     }
     const reader = new FileReader();
     reader.onload = (e) => {
         let imageUrl = e.target.result;
-        backgroundImage.value = imageUrl;
+        backgroundImage.value = imageUrl.split(',')[1]
         toPreviewImage();
         const img = new Image();
         img.src = imageUrl;
@@ -766,6 +769,7 @@ const customUpload = async (options) => {
         formData.append('username', store.auth.user.username);
         formData.append('file', file);
         formData.append('params', JSON.stringify(params.value));
+        formData.append('backgroundImage', backgroundImage.value);
         try {
             await axios.post('/api/batch-image-watermarker/start-task', formData, {
                 withCredentials: true,
@@ -786,6 +790,9 @@ const customUpload = async (options) => {
             if (progress.value === 100) {
                 clearInterval(timerId);
                 try {
+                    let map = await GET("/api/batch-image-watermarker/get-additional-data", {
+                        username: store.auth.user.username
+                    })
                     const response = await axios.get('/api/batch-image-watermarker/get-zip-file', {
                         params: {
                             username: store.auth.user.username
@@ -793,9 +800,6 @@ const customUpload = async (options) => {
                         withCredentials: true,
                         responseType: 'blob'
                     });
-                    let map = await GET("/api/batch-image-watermarker/get-additional-data", {
-                        username: store.auth.user.username
-                    })
                     successMatch.value = map["successMatch"]
                     tableNoMatch.value = map["tableNoMatch"]
                     imageNoMatch.value = map["imageNoMatch"]
@@ -819,7 +823,7 @@ const customUpload = async (options) => {
                     isRunning.value = false
                 }
             }
-        }, 1000);
+        }, 500);
     } catch (error) {
         ElMessage.error('处理过程中发生错误: ' + error.message);
         options.onError(error);
@@ -865,6 +869,12 @@ onBeforeRouteLeave(async (to, from, next) => {
 
 
 <style scoped>
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
 .container {
     width: 1000px;
     margin: 20px auto;
@@ -875,6 +885,13 @@ onBeforeRouteLeave(async (to, from, next) => {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .upload-section {

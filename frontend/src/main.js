@@ -10,8 +10,9 @@ import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import axios from "axios";
-import { setupPersistedStore } from './stores/index.js';
+import { setupPersistedStore, useStore } from './stores/index.js';
 import LazyLoad from './directives/lazyLoad'
+import { _GET } from "@/net/index.js";
 
 const pinia = createPinia();
 setupPersistedStore(pinia);
@@ -27,6 +28,14 @@ app.use(router)
 app.use(ElementPlus)
 app.directive('lazy', LazyLoad)
 app.mount('#app')
+
+const store = useStore();
+if (store.auth.user) {
+    _GET('/api/user/me',
+        (message) => store.auth.user = message,
+        (errorMsg) => store.auth.user = null
+    );
+}
 
 router.beforeEach((to, from, next) => {
     if (to.meta.title) {

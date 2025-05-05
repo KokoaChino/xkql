@@ -1,21 +1,23 @@
 <template>
-    <Title/>
-    <div class="button-container">
-        <button class="button button-1" @click="game_start">开始游戏</button>
-        <label>
-            设置游戏最大值：
-            <select v-model="max" style="width: 90px;height: 30px;">
-                <option selected>10</option>
-                <option>100</option>
-                <option>1000</option>
-                <option>10000</option>
-                <option>100000</option>
-                <option>1000000</option>
-                <option>10000000</option>
-                <option>100000000</option>
-            </select>
-        </label>
-        <button class="button button-2" @click="historical_record">历史记录</button>
+    <div class="main-container">
+        <Title/>
+        <div class="button-container">
+            <button class="button button-1" @click="game_start">开始游戏</button>
+            <label>
+                设置游戏最大值：
+                <select v-model="max" style="width: 90px;height: 30px;">
+                    <option selected>10</option>
+                    <option>100</option>
+                    <option>1000</option>
+                    <option>10000</option>
+                    <option>100000</option>
+                    <option>1000000</option>
+                    <option>10000000</option>
+                    <option>100000000</option>
+                </select>
+            </label>
+            <button class="button button-2" @click="historical_record">历史记录</button>
+        </div>
     </div>
 </template>
 
@@ -52,6 +54,13 @@ const historical_record = async () => {
 * {
     margin: 0;
     padding: 0;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .button-container {

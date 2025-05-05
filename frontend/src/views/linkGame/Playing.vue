@@ -1,38 +1,45 @@
 <template>
-    <div @mouseup="is_down=false" @dragstart.prevent>
+    <div class="main-container">
         <Title/>
-        <div class="radio">
-            <span style="margin-right: 30px">方阵大小</span>
-            <el-radio-group v-model="n" size="large" v-for="(x, index) in [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" :key="index">
-                <el-radio-button :label="x" :value="x"/>
-            </el-radio-group>
-        </div>
-        <div v-show="G.length > 1" style="width: 100%; text-align: center;">
-            <h1 style="color: #606266">
-                {{ p }} / {{ G.length - 1 }}
-            </h1>
-            <h2 style="color: #529b2e">
-                {{ formatSeconds(seconds) }}
-            </h2>
-        </div>
-        <div class="grid">
-            <div v-for="(row, rowIndex) in g" :key="rowIndex" class="row">
-                <div v-for="(cell, cellIndex) in row" :key="cellIndex" class="cell"
-                     :style="set_color(cell)"
-                     @mousedown="set_path(rowIndex, cellIndex)"
-                     @mouseenter="!is_down ? '' : add_path(rowIndex, cellIndex)"
-                     @dblclick="remove_path(rowIndex, cellIndex)">
-                    <div class="level" :style="set_style(0, cell)"></div>
-                    <div class="vertical" :style="set_style(1, cell)"></div>
+        <div @mouseup="is_down=false" @dragstart.prevent>
+            <div class="radio">
+                <span style="margin-right: 30px">方阵大小</span>
+                <el-radio-group v-model="n" size="large" v-for="(x, index) in [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" :key="index">
+                    <el-radio-button :label="x" :value="x"/>
+                </el-radio-group>
+            </div>
+            <div v-show="G.length > 1" style="width: 100%; text-align: center;">
+                <h1 style="color: #606266">
+                    {{ p }} / {{ G.length - 1 }}
+                </h1>
+                <h2 style="color: #529b2e">
+                    {{ formatSeconds(seconds) }}
+                </h2>
+            </div>
+            <div class="grid">
+                <div v-for="(row, rowIndex) in g" :key="rowIndex" class="row">
+                    <div v-for="(cell, cellIndex) in row" :key="cellIndex" class="cell"
+                         :style="set_color(cell)"
+                         :data-row="rowIndex" :data-col="cellIndex"
+                         @mousedown="handleStart($event, rowIndex, cellIndex)"
+                         @touchstart.passive="handleStart($event, rowIndex, cellIndex)"
+                         @mouseenter="!is_down ? '' : add_path(rowIndex, cellIndex)"
+                         @touchmove.prevent="handleMove($event)"
+                         @touchend="handleEnd"
+                         @dblclick="remove_path(rowIndex, cellIndex)"
+                         @touchstart="handleTouchStart($event, rowIndex, cellIndex)">
+                        <div class="level" :style="set_style(0, cell)"></div>
+                        <div class="vertical" :style="set_style(1, cell)"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div v-if="G.length <= 1" class="buttons">
-            <button @click="init">开始游戏</button>
-        </div>
-        <div v-else class="buttons">
-            <button @click="reset">重置</button>
-            <button @click="init">新的游戏</button>
+            <div v-if="G.length <= 1" class="buttons">
+                <button @click="init">开始游戏</button>
+            </div>
+            <div v-else class="buttons">
+                <button @click="reset">重置</button>
+                <button @click="init">新的游戏</button>
+            </div>
         </div>
     </div>
 </template>
@@ -141,6 +148,40 @@ const set_path = (i, j) => {
     }
     if (path.value.length > 0) {
         is_down.value = true;
+    }
+}
+
+const handleStart = (event, rowIndex, cellIndex) => {
+    event.preventDefault();
+    set_path(rowIndex, cellIndex);
+    is_down.value = true;
+}
+
+const handleMove = (event) => {
+    if (!is_down.value) return;
+    event.preventDefault();
+    const touch = event.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element?.closest('.cell')) {
+        const dataset = element.dataset;
+        add_path(parseInt(dataset.row), parseInt(dataset.col));
+    }
+}
+
+const handleEnd = () => {
+    is_down.value = false;
+}
+
+const lastTap = ref(0), tapDelay = ref(300);
+
+const handleTouchStart = (event, row, col) => {
+    const now = Date.now();
+    if (now - lastTap.value < tapDelay.value) {
+        event.preventDefault();
+        remove_path(row, col);
+        lastTap.value = 0;
+    } else {
+        lastTap.value = now;
     }
 }
 
@@ -345,6 +386,16 @@ const remove_path = (i, j) => {
 
 
 <style scoped>
+* {
+    touch-action: manipulation;
+}
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
 .radio {
     display: flex;
     align-items: center;
@@ -353,6 +404,8 @@ const remove_path = (i, j) => {
 }
 
 .grid {
+    overflow: hidden;
+    touch-action: none;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -363,6 +416,10 @@ const remove_path = (i, j) => {
     display: flex;
 }
 .grid .cell {
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     width: 50px;
     height: 50px;
     display: flex;

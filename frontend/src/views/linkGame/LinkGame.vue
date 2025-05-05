@@ -1,9 +1,11 @@
 <template>
-    <Title/>
-    <div class="button-container">
-        <button class="button button-1" @click="game_start">开始游戏</button>
-        <button class="button button-2" @click="set_game">游戏库</button>
-        <button class="button button-3" @click="historical_record">历史记录</button>
+    <div class="main-container">
+        <Title/>
+        <div class="button-container">
+            <button class="button button-1" @click="game_start">开始游戏</button>
+            <button class="button button-2" @click="set_game">游戏库</button>
+            <button class="button button-3" @click="historical_record">历史记录</button>
+        </div>
     </div>
 </template>
 
@@ -42,6 +44,13 @@ const historical_record = async () => {
 * {
     margin: 0;
     padding: 0;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .button-container {

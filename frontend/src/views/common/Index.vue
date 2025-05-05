@@ -52,6 +52,13 @@
                 <img src="/icon/CharacterMap.png" alt="角色自截图">
                 <button role="button" class="button-name">角色自截图</button>
             </div>
+            <div class="item" @click="document">
+                <img src="/icon/Document.png" alt="Document"
+                     :style="{ transform: `scale(${ scales[1] })` }"
+                     @mouseenter="scales[1] *= 1.05"
+                     @mouseleave="scales[1] /= 1.05">
+                <button role="button" class="button-name">文档中心</button>
+            </div>
             <div class="item" @click="test">
                 <img src="/icon/Test.png" alt="Test">
                 <button role="button" class="button-name">Test</button>
@@ -73,7 +80,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 provide("title", "星开祈灵百宝箱");
 
 const store = useStore()
-const scales = ref([0.7, 0.7])
+const scales = ref([0.7, 0.8])
 
 const logout = () => {
     _GET('/api/auth/logout', (message) => {
@@ -101,6 +108,10 @@ const crawler = async () => {
 
 const watermark = async () => {
     await router.push('/batch-image-watermarker')
+}
+
+const document = async () => {
+    await router.push('/document')
 }
 
 const test = async () => {
@@ -149,7 +160,7 @@ const unsubscribe = async () => {
 
 .container {
     width: 1680px;
-    height: 2000px;
+    height: 2200px;
     background-color: #ffffff;
     background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 0);
     background-size: 30px 30px;

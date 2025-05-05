@@ -1,8 +1,10 @@
 <template>
-    <Title/>
-    <div class="container">
-        <div>这里是开发者的测试平台哦！</div>
-        <div class="emoji">✧⁺(・ω・)⁺✧</div>
+    <div class="main-container">
+        <Title/>
+        <div class="container">
+            <div>这里是开发者的测试平台哦！</div>
+            <div class="emoji">✧⁺(・ω・)⁺✧</div>
+        </div>
     </div>
 </template>
 
@@ -18,6 +20,12 @@ provide("title", "Test");
 
 
 <style scoped>
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
 .container {
     display: flex;
     justify-content: center;

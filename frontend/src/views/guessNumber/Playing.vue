@@ -1,24 +1,26 @@
 <template>
-    <Title/>
-    <div class="container">
-        <span style="color: darkslategrey">请输入 [0, {{ max }}] 之间的数字</span>
-    </div>
-    <div class="container" style="height: 3vh; margin-bottom: 5vh;gap: 10px">
-        <input v-model="cur" type="number" style="height: 35px" placeholder="请输入你要猜的数字">
-        <el-button style="height: 40px; " type="success" @click="play" :disabled="!flag">
-            提交
-        </el-button>
-    </div>
-    <el-divider>
-        <span style="color: grey;font-size: 15px">历史记录</span>
-    </el-divider>
-    <div style="width: 100%">
-        <div class="box">
-            <ul style="list-style: none; color: darkblue" v-for="s in g.list">
-                <li>
-                    {{ s }}
-                </li>
-            </ul>
+    <div class="main-container">
+        <Title/>
+        <div class="container">
+            <span style="color: darkslategrey">请输入 [0, {{ max }}] 之间的数字</span>
+        </div>
+        <div class="container" style="height: 30px; margin-bottom: 50px;gap: 10px">
+            <input v-model="cur" type="number" style="height: 35px" placeholder="请输入你要猜的数字">
+            <el-button style="height: 40px; " type="success" @click="play" :disabled="!flag">
+                提交
+            </el-button>
+        </div>
+        <el-divider>
+            <span style="color: grey;font-size: 15px">历史记录</span>
+        </el-divider>
+        <div style="width: 100%">
+            <div class="box">
+                <ul style="list-style: none; color: darkblue" v-for="s in g.list">
+                    <li>
+                        {{ s }}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -66,11 +68,17 @@ onMounted(async () => {
     padding: 0;
 }
 
+.main-container {
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 5vh;
+    margin-bottom: 10px;
 }
 
 input[type="text"] {

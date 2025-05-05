@@ -11,6 +11,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -70,10 +71,9 @@ public class ImageUtil {
                     .build()
     );
 
-    public static void handleImage(WatermarkParams params, File file, String watermark, OutputStream outputStream) throws FontNotFoundException { // 处理图片
+    public static void handleImage(WatermarkParams params, Image image, String watermark, Image backgroundImage, OutputStream outputStream) throws FontNotFoundException { // 处理图片
         try {
-            Image image = ImageIO.read(file);
-            BufferedImage watermarkedImage = handleWatermark(params, image, watermark);
+            BufferedImage watermarkedImage = handleWatermark(params, image, backgroundImage, watermark);
             Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
             if (!writers.hasNext()) throw new RuntimeException("未找到 JPG 编写器");
             ImageWriter writer = writers.next();
@@ -91,12 +91,33 @@ public class ImageUtil {
         }
     }
 
-    public static BufferedImage handleWatermark(WatermarkParams p, Image image, String watermark) throws IOException, FontNotFoundException { // 处理图片水印
+    public static BufferedImage handleWatermark(WatermarkParams p, Image image, Image backgroundImage, String watermark) throws IOException, FontNotFoundException { // 处理图片水印
         int width = image.getWidth(null), height = image.getHeight(null);
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bufferedImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, width, height);
         g.drawImage(image, 0, 0, width, height, null);
+        if (backgroundImage != null) { // 背景图层
+            BufferedImage styleImage = toBufferedImage(backgroundImage);
+            int styleWidth = styleImage.getWidth(), styleHeight = styleImage.getHeight();
+            int minWidth = Math.min(width, styleWidth), minHeight = Math.min(height, styleHeight);
+            int[] stylePixels = ((DataBufferInt) styleImage.getRaster().getDataBuffer()).getData();
+            int[] destPixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+            for (int y = 0; y < minHeight; y++) {
+                int styleRowOffset = y * styleWidth, destRowOffset = y * width;
+                for (int x = 0; x < minWidth; x++) {
+                    int stylePixel = stylePixels[styleRowOffset + x];
+                    int styleAlpha = (stylePixel >>> 24) & 0xFF;
+                    if (styleAlpha != 0) {
+                        int destPixel = destPixels[destRowOffset + x];
+                        int blendedPixel = getBlendedPixel(destPixel, stylePixel, styleAlpha);
+                        destPixels[destRowOffset + x] = blendedPixel;
+                    }
+                }
+            }
+        }
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         Font font = getFont(p.getFontName(), p.getFontStyles(), p.getFontSize());
         if (font == null) throw new FontNotFoundException("字体 [" + p.getFontName() + "] 未安装在系统中");
         g.setFont(font); // 字体
@@ -185,5 +206,32 @@ public class ImageUtil {
             }
         }
         return null;
+    }
+
+    private static int getBlendedPixel(int destPixel, int stylePixel, int styleAlpha) {
+        int destR = (destPixel >> 16) & 0xFF, destg = (destPixel >> 8) & 0xFF, destB = destPixel & 0xFF;
+        int styleR = (stylePixel >> 16) & 0xFF, styleG = (stylePixel >> 8) & 0xFF, styleB = stylePixel & 0xFF;
+        int blendedR = (styleR * styleAlpha + destR * (255 - styleAlpha)) / 255;
+        int blendedG = (styleG * styleAlpha + destg * (255 - styleAlpha)) / 255;
+        int blendedB = (styleB * styleAlpha + destB * (255 - styleAlpha)) / 255;
+        return (blendedR << 16) | (blendedG << 8) | blendedB;
+    }
+
+    public static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage original) {
+            if (original.getType() == BufferedImage.TYPE_INT_ARGB ||
+                    original.getType() == BufferedImage.TYPE_INT_RGB) {
+                return original;
+            }
+        }
+        BufferedImage res = new BufferedImage(
+                img.getWidth(null),
+                img.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB
+        );
+        Graphics2D g = res.createGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
+        return res;
     }
 }

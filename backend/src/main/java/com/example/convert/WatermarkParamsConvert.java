@@ -16,14 +16,11 @@ import java.util.Objects;
 public class WatermarkParamsConvert {
 
     public static String toBase64(byte[] bytes) {
-        return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     public static byte[] toBytes(String base64) {
-        if (base64 == null || !base64.startsWith("data:image/jpeg;base64,")) {
-            throw new IllegalArgumentException("无效的 Base64 字符串格式");
-        }
-        return Base64.getDecoder().decode(base64.split(",", 2)[1]);
+        return Base64.getDecoder().decode(base64);
     }
 
     public static WatermarkDataDTO toDTO(WatermarkData w) {

@@ -1,8 +1,8 @@
 <template>
-    <div class="card-title">
-        <div class="text">{{ characterName }}</div>
-    </div>
     <div class="main-container">
+        <div class="card-title">
+            <div class="text">{{ characterName }}</div>
+        </div>
         <div class="container">
             <div class="photo-card" v-for="(url, index) in urls" :key="index">
                 <img

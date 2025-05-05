@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useStore } from "@/stores";
+import { _GET } from "@/net/index.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -103,21 +104,35 @@ const router = createRouter({
                 title: '批量图片水印处理',
                 icon: '/icon/BatchImageWatermarker.png'
             }
+        }, {
+            path: '/document',
+            name: 'document',
+            component: () => import('@/views/common/Document.vue'),
+            meta: {
+                title: '文档中心',
+                icon: '/icon/Document.png'
+            }
         }
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    const store = useStore()
-    if(store.auth.user != null && to.name.startsWith('welcome-')) {
-        next('/index')
-    } else if(store.auth.user == null && to.fullPath.startsWith('/index')) {
-        next('/')
-    } else if(to.matched.length === 0) {
-        next('/index')
-    } else {
-        next()
+router.beforeEach(async (to, from, next) => {
+    const store = useStore();
+    try {
+        await _GET('/api/user/me',
+            (message) => store.auth.user = message,
+            () => store.auth.user = null
+        );
+    } catch (e) {
+        store.auth.user = null
     }
-})
+    if (store.auth.user && to.name.startsWith('welcome')) {
+        next('/index');
+    } else if (!store.auth.user && !to.name.startsWith('welcome-')) {
+        next('/');
+    } else {
+        next();
+    }
+});
 
 export default router

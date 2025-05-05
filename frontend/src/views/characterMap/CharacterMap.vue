@@ -1,6 +1,6 @@
 <template>
-    <Title/>
     <div class="main-container">
+        <Title/>
         <div class="container">
             <div class="for" v-for="(url, index) in urls" :key="index">
                 <div class="card-sub">

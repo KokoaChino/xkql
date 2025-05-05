@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.entity.common.Account;
 import com.example.entity.common.RestBean;
 import com.example.mapper.UserMapper;
 import com.example.service.api.AuthorizeService;
@@ -84,5 +85,10 @@ public class AuthorizeController {
         username = username.substring(1, username.length() - 1);
         mapper.deleteAccount(username);
         mapper.deleteAccountData(username);
+    }
+
+    @GetMapping("/get-account")
+    public Account getAccount(@RequestParam("username") String username) {
+        return service.getAccount(username);
     }
 }

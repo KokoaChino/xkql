@@ -119,15 +119,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const store = useStore();
-    try {
-        await _GET('/api/user/me',
-            (message) => store.auth.user = message,
-            () => store.auth.user = null
-        );
-    } catch (e) {
-        ElMessage.warning('自动登录失效，请重新登录');
-        store.auth.user = null
-    }
     if (store.auth.user && to.name.startsWith('welcome')) {
         next('/index');
     } else if (!store.auth.user && !to.name.startsWith('welcome-')) {

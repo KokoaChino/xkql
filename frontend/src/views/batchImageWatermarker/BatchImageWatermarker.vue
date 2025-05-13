@@ -17,16 +17,29 @@
                     </div>
                 </el-upload>
             </div>
-            <div v-if="progress > 0">
-                <el-progress
-                    :percentage="progress"
-                    :stroke-width="24"
-                    color="#409EFF"
-                    :text-inside="true"
-                    class="custom-progress"
-                >
-                    <span class="progress-text">{{ progress }}%</span>
-                </el-progress>
+            <div v-if="uploadProgress > 0">
+                <div v-if="handleProgress === 0">
+                    <el-progress
+                        :percentage="uploadProgress"
+                        :stroke-width="24"
+                        color="#75A63B"
+                        :text-inside="true"
+                        class="custom-progress"
+                    >
+                        <span class="progress-text">{{ uploadProgress }}%</span>
+                    </el-progress>
+                </div>
+                <div v-else>
+                    <el-progress
+                        :percentage="handleProgress"
+                        :stroke-width="24"
+                        color="#409EFF"
+                        :text-inside="true"
+                        class="custom-progress"
+                    >
+                        <span class="progress-text">{{ handleProgress }}%</span>
+                    </el-progress>
+                </div>
                 <div class="result-container">
                     <div class="result-block">
                         <div class="block-header">匹配成功：{{ successMatch.length }} 个</div>
@@ -125,21 +138,31 @@
                 </div>
             </div>
             <div class="control-bar">
-                <div class="radio-container" >
+                <div class="radio-container">
                     <el-radio-group v-model="style" size="large">
                         <el-radio-button label="预设样式" value="预设样式" />
                         <el-radio-button label="自定义样式" value="自定义样式" />
                     </el-radio-group>
                 </div>
-                <el-button
-                    size="large"
-                    type="primary"
-                    @click="addCustomStyle"
-                    :disabled="!isCustomStyle"
-                >
-                    <span v-if="isCustomStyle && mode === customModes.length">添加样式</span>
-                    <span v-else>更新样式</span>
-                </el-button>
+                <div class="button-group">
+                    <el-button
+                        size="large"
+                        type="info"
+                        @click="copyCustomStyle"
+                        :disabled="!isCustomStyle || mode === customModes.length"
+                    >
+                        <span>复制样式</span>
+                    </el-button>
+                    <el-button
+                        size="large"
+                        type="primary"
+                        @click="addCustomStyle"
+                        :disabled="!isCustomStyle"
+                    >
+                        <span v-if="isCustomStyle && mode === customModes.length">添加样式</span>
+                        <span v-else>更新样式</span>
+                    </el-button>
+                </div>
             </div>
             <div class="params-container">
                 <el-row :gutter="20">
@@ -458,7 +481,7 @@ const successMatch = ref([])
 const tableNoMatch = ref([])
 const imageNoMatch = ref([])
 
-const progress = ref(0)
+const handleProgress = ref(0), uploadProgress = ref(0)
 const isRunning = ref(false)
 
 const presetModes = ref([]) // 预设样式
@@ -659,6 +682,14 @@ const checkFont = async (fontName) => {
     return res
 }
 
+const copyCustomStyle = async () => {
+    let x = customModes.value[mode.value - 1], y = customModes.value[customModes.value.length - 1]
+    y.params = JSON.parse(JSON.stringify(x.params))
+    y.backgroundImage = x.backgroundImage
+    y.previewImage = x.previewImage
+    mode.value = customModes.value.length
+}
+
 const addCustomStyle = async () => {
     if (!await checkFont(params.value.fontName)) return
     if (customModes.value.length === limit) {
@@ -763,7 +794,7 @@ const customUpload = async (options) => {
     isRunning.value = true
     try {
         successMatch.value = tableNoMatch.value = imageNoMatch.value = []
-        progress.value = 0
+        uploadProgress.value = handleProgress.value = 0
         const {file} = options;
         const formData = new FormData();
         formData.append('username', store.auth.user.username);
@@ -773,8 +804,14 @@ const customUpload = async (options) => {
         try {
             await axios.post('/api/batch-image-watermarker/start-task', formData, {
                 withCredentials: true,
-                responseType: 'blob'
+                responseType: 'blob',
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total) {
+                        uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    }
+                }
             });
+            uploadProgress.value = 100;
         } catch (e) {
             if (e.response?.status === 413) {
                 ElMessage.error("文件大小超过服务器限制（500MB）");
@@ -784,10 +821,10 @@ const customUpload = async (options) => {
             return;
         }
         let timerId = setInterval(async () => {
-            progress.value = await GET("/api/batch-image-watermarker/get-progress", {
+            handleProgress.value = await GET("/api/batch-image-watermarker/get-progress", {
                 username: store.auth.user.username
             })
-            if (progress.value === 100) {
+            if (handleProgress.value === 100) {
                 clearInterval(timerId);
                 try {
                     let map = await GET("/api/batch-image-watermarker/get-additional-data", {
@@ -827,8 +864,6 @@ const customUpload = async (options) => {
     } catch (error) {
         ElMessage.error('处理过程中发生错误: ' + error.message);
         options.onError(error);
-    } finally {
-        isRunning.value = false
     }
 }
 
@@ -1053,6 +1088,15 @@ onBeforeRouteLeave(async (to, from, next) => {
     box-shadow: 0 2px 12px rgba(64,158,255,0.1);
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.radio-container {
+    margin: 10px 0;
+}
+
 .params-container {
     background: white;
     border-radius: 8px;
@@ -1186,10 +1230,6 @@ onBeforeRouteLeave(async (to, from, next) => {
         font-size: 13px;
         color: #606266;
     }
-}
-
-.radio-container {
-    margin: 10px 0;
 }
 
 .optional-item {

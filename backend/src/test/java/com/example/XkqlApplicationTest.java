@@ -9,7 +9,6 @@ public class XkqlApplicationTest {
 
     String username = "星开祈灵";
 
-
     @Test
     void test() {
 

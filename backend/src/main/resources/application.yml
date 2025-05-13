@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  profiles:
+    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/xkql?useUnicode=true&characterEncoding=utf-8
@@ -26,3 +28,31 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 512MB
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+static-path: backend/static
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+static-path: /www/wwwroot/xkql/backend/static
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+static-path: /www/wwwroot/xkql/backend/static
+
+---
+spring:
+  config:
+    activate:
+      on-profile: BackendApplication
+static-path: backend/static

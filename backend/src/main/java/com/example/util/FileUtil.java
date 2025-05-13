@@ -12,10 +12,12 @@ import java.util.regex.Pattern;
 public class FileUtil {
 
     public static final Set<String> TABLE = new HashSet<>(List.of( // 支持的表格形式
-            "xls", "xlsx"
+            "xls", "xlsx",
+            "XLS", "XLSX"
     ));
     public static final Set<String> IMAGE = new HashSet<>(List.of( // 支持的图片形式
-            "jpg", "jpeg", "png", "webp"
+            "jpg", "jpeg", "png", "webp",
+            "JPG", "JPEG", "PNG", "WEBG"
     ));
     public static final Pattern ERROR_PATTERN = Pattern.compile("[\\\\/:*?\"<>|]");
     public static final String ERROR_PATH = "ERROR-" + UUID.randomUUID().toString().substring(0, 8);

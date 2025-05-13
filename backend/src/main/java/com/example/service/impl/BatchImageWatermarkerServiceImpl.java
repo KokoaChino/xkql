@@ -16,10 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +35,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -44,6 +49,9 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
     @Resource
     WatermarkMapper mapper;
+
+    @Value("${static-path}")
+    private String staticPath;
 
     private static final Map<String, Future<?>> T = new ConcurrentHashMap<>();
     private static final Map<String, Integer> P = new ConcurrentHashMap<>();
@@ -148,7 +156,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
     @Override
     public String getDefaultBackgroundImage() {
-        File imageFile = new File("backend/static/图片/默认背景图.jpg");
+        File imageFile = new File(staticPath + "/图片/默认背景图.jpg");
         try (InputStream inputStream = new FileInputStream(imageFile)) {
             byte[] bytes = inputStream.readAllBytes();
             return WatermarkParamsConvert.toBase64(bytes);
@@ -209,7 +217,8 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                 Map<String, ImageInfo> map = new HashMap<>();
                 Map<String, Integer> entriesCnt = new HashMap<>();
                 DataFormatter dataFormatter = new DataFormatter();
-                Set<String> successMatch = new HashSet<>(), tableNoMatch = map.keySet(), imageNoMatch = new HashSet<>();
+                Set<String> successMatch = new HashSet<>(), errorMids = new HashSet<>(),
+                        tableNoMatch = map.keySet(), imageNoMatch = new HashSet<>();
                 try (XSSFWorkbook workbook = new XSSFWorkbook(table)) {
                     XSSFSheet sheet = workbook.getSheetAt(0);
                     for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -236,6 +245,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                                 : String.join("/", pathSegments) + "/" + fileName;
                         if (flag) {
                             fullPath = FileUtil.ERROR_PATH + "/" + mid + ".jpg";
+                            errorMids.add(mid);
                         }
                         int cnt = entriesCnt.getOrDefault(fullPath, 0);
                         if (cnt > 0) {
@@ -277,6 +287,25 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
                         if (progress == 100) progress = 99;
                         P.put(username, progress);
                     }
+                    File modifiedTable = File.createTempFile("临时统计报表", ".xlsx");
+                    Files.copy(new File(staticPath + "/表格/默认统计报表.xlsx").toPath(), modifiedTable.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    try (XSSFWorkbook modifiedWorkbook = new XSSFWorkbook(new FileInputStream(modifiedTable))) {
+                        XSSFSheet modifiedSheet = modifiedWorkbook.getSheetAt(0);
+                        writeColumn(modifiedSheet, 0,  successMatch.stream()
+                                .filter(s -> s != null && !s.isEmpty() && !errorMids.contains(s))
+                                .collect(Collectors.toCollection(LinkedHashSet::new)));
+                        writeColumn(modifiedSheet, 1, filterEmptyStrings(errorMids));
+                        writeColumn(modifiedSheet, 2, filterEmptyStrings(tableNoMatch));
+                        writeColumn(modifiedSheet, 3, filterEmptyStrings(imageNoMatch));
+                        try (FileOutputStream out = new FileOutputStream(modifiedTable)) {
+                            modifiedWorkbook.write(out);
+                        }
+                    }
+                    ZipArchiveEntry reportEntry = new ZipArchiveEntry("统计报表.xlsx");
+                    zipOut.putArchiveEntry(reportEntry);
+                    Files.copy(modifiedTable.toPath(), zipOut);
+                    zipOut.closeArchiveEntry();
+                    modifiedTable.delete();
                 } catch (InvalidFormatException e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -293,6 +322,27 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
             P.put(username, 100);
         } finally {
             FileUtil.deleteDirectory(input);
+        }
+    }
+
+    private void writeColumn(XSSFSheet sheet, int columnIndex, Set<String> data) {
+        int rowNum = 2;
+        for (String value : data) {
+            Row row = sheet.getRow(rowNum);
+            if (row == null) row = sheet.createRow(rowNum);
+            Cell cell = row.getCell(columnIndex);
+            XSSFCellStyle originalStyle = null;
+            if (cell != null) originalStyle = (XSSFCellStyle) cell.getCellStyle();
+            if (cell == null) cell = row.createCell(columnIndex);
+            cell.setCellValue(value);
+            if (originalStyle != null) {
+                cell.setCellStyle(originalStyle);
+            } else {
+                XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+                style.setAlignment(HorizontalAlignment.CENTER);
+                cell.setCellStyle(style);
+            }
+            rowNum++;
         }
     }
 

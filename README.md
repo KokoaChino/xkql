@@ -277,7 +277,7 @@
 #### 5. 批量图片水印处理
 
 ##### 主操作界面
-![星开祈灵百宝箱 项目文档-21.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-21.png?v=1)
+![星开祈灵百宝箱 项目文档-21.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-21.png?v=2)
 
 界面布局包含以下功能区域（自上而下、从左至右排列）：
 1. **压缩文件上传区** - 支持ZIP格式文件点击上传
@@ -344,20 +344,27 @@
    │   └── 两室一厅
    │       └── 商品展示图
    │           └── 701.jpg
-   └── 一级目录
-       └── 二级目录
-           └── 三级目录
-               └── 四级目录
-                   └── 五级目录
-                       └── 六级目录
-                           └── 七级目录
-                               └── ddd.jpg
+   ├── 一级目录
+   │   └── 二级目录
+   │       └── 三级目录
+   │           └── 四级目录
+   │               └── 五级目录
+   │                   └── 六级目录
+   │                       └── 七级目录
+   │                           └── ddd.jpg
+   └── 统计报表.xlsx
    ```
 
 ##### 处理结果解析
-**匹配成功：** 数据表与图片文件存在对应关系
-**表匹配失败：** 数据表中存在但无对应图片文件
-**图匹配失败：** 图片文件存在但无对应数据表记录
+* **匹配成功：** 数据表与图片文件存在对应关系
+
+* **表匹配失败：** 数据表中存在但无对应图片文件
+
+* **图匹配失败：** 图片文件存在但无对应数据表记录
+
+**统计报表示例**
+
+![星开祈灵百宝箱 项目文档-30.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-30.png?v=1)
 
 ##### 水印参数配置
 ![星开祈灵百宝箱 项目文档-24.png](http://8.138.214.176:5174/项目图床/星开祈灵百宝箱%20项目文档-24.png?v=1)
@@ -411,7 +418,7 @@
 - **框架** ：Spring Boot、Spring MVC、Spring Security、MyBatis
 - **数据库** ：MySQL、Redis
 - **第三方库** ：Lombok、Java Mail Sender、Fastjson、Apache Commons Compress、Apache POI
-- **安全** ：BCryptPasswordEncoder、JWT/Remember-Me
+- **安全** ：BCryptPasswordEncoder、Remember-Me
 - **工具与功能** ：线程管理、图像处理、文件上传、全局异常处理
 
 ### 前端
@@ -774,6 +781,7 @@ public void handleFileUpload(String username, InputStream fileStream, WatermarkP
                         zipOut.closeArchiveEntry();
                         tableNoMatch.remove(mid);
                         successMatch.add(mid);
+                        // ...
                     }
                     int progress = ++validFilesCount * 100 / (files.length - 1);
                     if (progress == 100) progress = 99; // 等待收尾工作
@@ -804,7 +812,7 @@ public void handleFileUpload(String username, InputStream fileStream, WatermarkP
 **亮点描述：**
 
 - **Builder 模式**：在 `WatermarkParams` 和 `WatermarkParamsDTO` 中使用 `@Builder` 注解，简化复杂对象的构造
-- **策略模式**：通过 `PresetStyleParams` 提供预设水印参数模板（如 `ImageUtil.P` 中的 6 种预设样式），降低客户端配置复杂度
+- **策略模式**：通过 `PresetStyleParams` 提供预设水印参数模板（如 `ImageUtil.P` 中的 5 种预设样式），降低客户端配置复杂度
 - **工具类复用**：`FileUtil` 封装 ZIP 解压和目录删除，`CrawlerUtil` 实现网页爬虫的核心逻辑，提升代码复用率
 
 **代码片段：**
@@ -905,10 +913,12 @@ public class ImageUtil {
 public class FileUtil {
 
     public static final Set<String> TABLE = new HashSet<>(List.of( // 支持的表格形式
-            "xls", "xlsx"
+            "xls", "xlsx",
+            "XLS", "XLSX"
     ));
     public static final Set<String> IMAGE = new HashSet<>(List.of( // 支持的图片形式
-            "jpg", "jpeg", "png", "webp"
+            "jpg", "jpeg", "png", "webp",
+            "JPG", "JPEG", "PNG", "WEBG"
     ));
     public static final Pattern ERROR_PATTERN = Pattern.compile("[\\\\/:*?\"<>|]");
     public static final String ERROR_PATH = "ERROR-" + UUID.randomUUID().toString().substring(0, 8);
@@ -991,7 +1001,7 @@ public class FileUtil {
 
 ## 📊 代码量统计
 
-数据截止至 **v1.5.3**
+数据截止至 **v1.5.4**
 
 （单位：行，不包含文档代码）
 
@@ -1001,9 +1011,9 @@ public class FileUtil {
 |    角色自截图    | 163  | 446  | 609  |
 |    连连看游戏    | 169  | 1188 | 1357 |
 |   简单爬虫脚本   | 250  | 217  | 467  |
-| 批量图片水印处理 | 1127 | 1286 | 2413 |
-|   （其他代码）   | 818  | 1425 | 2243 |
-|     **总和**     | 2680 | 4899 | 7579 |
+| 批量图片水印处理 | 1179 | 1326 | 2505 |
+|   （其他代码）   | 848  | 1397 | 2242 |
+|     **总和**     | 2762 | 4908 | 7670 |
 
 
 
@@ -1085,6 +1095,8 @@ backend
 ├── static
 │   ├── 图片
 │   │   └── 默认背景图.jpg
+│   ├── 表格
+│   │   └── 默认统计报表.xlsx
 │   └── 字体
 │       ├── Source Han Sans CN.otf
 │       ├── 黑体.ttf
@@ -1310,11 +1322,11 @@ frontend
 * **性能提升**：
     * 将任务处理线程模型升级为动态线程池，实现并发请求的弹性资源分配
     * 优化内存管理策略，采用流式处理替代全量二进制读写，配合定时任务自动清理缓存文件
-    
+
 * **功能增强**：
     * 新增PNG格式样式图层兼容支持，确保特效渲染结果图完整性
     * 增强用户认证体系与「记住我」功能稳定性，降低未授权访问(401)异常触发频率
-    
+
 * **移动端适配**：
     * 重构响应式布局框架，实现PC/移动端跨设备分辨率兼容
 
@@ -1322,6 +1334,14 @@ frontend
 
 * **文档完善**：
   * 主页新增产品使用手册与技术开发文档模块，提供终端用户操作指南与开发者技术说明
+
+**2025-5-13：[1.5.4]**
+
+* 批量图片水印处理新增功能：
+  1. 复制样式操作
+  2. 上传进度条
+  3. 输出统计报表表格文件
+* 优化了文档中心的交互
 
 
 

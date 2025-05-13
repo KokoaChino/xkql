@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useStore } from "@/stores";
 import { _GET } from "@/net/index.js";
+import {ElMessage} from "element-plus";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -124,11 +125,13 @@ router.beforeEach(async (to, from, next) => {
             () => store.auth.user = null
         );
     } catch (e) {
+        ElMessage.warning('自动登录失效，请重新登录');
         store.auth.user = null
     }
     if (store.auth.user && to.name.startsWith('welcome')) {
         next('/index');
     } else if (!store.auth.user && !to.name.startsWith('welcome-')) {
+        ElMessage.warning('自动登录失效，请重新登录');
         next('/');
     } else {
         next();

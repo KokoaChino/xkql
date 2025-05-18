@@ -467,6 +467,11 @@ public class SecurityConfiguration {
             .formLogin(e -> e // 自定义登录退出逻辑
                 .loginProcessingUrl("/api/auth/login") // 自定义登录URL
                 .successHandler(this::onAuthenticationSuccess) // JSON格式响应
+                .failureHandler(this::onAuthenticationFailure)
+            )
+            .logout(e -> e
+                .logoutUrl("/api/auth/logout")
+                .logoutSuccessHandler(this::onAuthenticationSuccess)
             )
             .rememberMe(e -> e // 记住我功能（15天有效期）
                 .tokenValiditySeconds(3600 * 24 * 15) // 令牌有效期
@@ -593,7 +598,7 @@ public class BatchImageWatermarkerServiceImpl implements BatchImageWatermarkerSe
 
 **亮点描述：**
 
-- **MyBatis 与 Spring Boot 的无缝集成**：通过 `@Mapper` 注解和 XML-less 配置，实现简洁的数据库操作（如 `UserMapper` 的 `createAccount` 方法）
+- **MyBatis 与 Spring Boot 的无缝集成**：通过 `@Mapper` 注解实现简洁的数据库操作（如 `UserMapper` 的 `createAccount` 方法）
 - **DTO-Entity 转换**：在 `WatermarkParamsConvert` 中定义 `toDTO` 和 `toEntity` 方法，解耦传输对象（DTO）与实体（Entity），提升代码可维护性
 - **复杂业务参数的序列化**：将 `WatermarkParams` 对象序列化为 JSON 存储（如 `WatermarkData` 的 `json` 字段），简化数据库设计
 

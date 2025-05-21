@@ -817,7 +817,7 @@ public void handleFileUpload(String username, InputStream fileStream, WatermarkP
 **亮点描述：**
 
 - **Builder 模式**：在 `WatermarkParams` 和 `WatermarkParamsDTO` 中使用 `@Builder` 注解，简化复杂对象的构造
-- **策略模式**：通过 `PresetStyleParams` 提供预设水印参数模板（如 `ImageUtil.P` 中的 5 种预设样式），降低客户端配置复杂度
+- **参数化配置**：通过 `PresetStyleParams` 提供预设水印参数模板（如 `ImageUtil.P` 中的 5 种预设样式），降低客户端配置复杂度
 - **工具类复用**：`FileUtil` 封装 ZIP 解压和目录删除，`CrawlerUtil` 实现网页爬虫的核心逻辑，提升代码复用率
 
 **代码片段：**

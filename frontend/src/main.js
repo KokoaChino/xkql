@@ -20,7 +20,7 @@ setupPersistedStore(pinia);
 
 const app = createApp(App)
 
-axios.defaults.baseURL = 'http://8.138.214.176:8081'
+axios.defaults.baseURL = 'http://localhost:8081'
 
 app.use(createPinia())
 app.use(pinia)
